@@ -1,0 +1,6 @@
+@Shree_API_AWS_HostAddress = http://localhost:5070
+
+GET {{Shree_API_AWS_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
