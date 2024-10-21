@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,13 +6,12 @@ using Shree_API_AWS.Attributes;
 using Shree_API_AWS.Context;
 using Shree_API_AWS.DataTransferObjects;
 using Shree_API_AWS.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Shree_API_AWS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class EmployeesController : ControllerBase
     {
         private readonly ShreedbContext _context;
@@ -27,7 +25,7 @@ namespace Shree_API_AWS.Controllers
 
         // GET: api/Employees
         [HttpGet]
-        //[Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "guest,user,admin")]
         [EncryptResponse]
         public async Task<ActionResult<IEnumerable<Employee_DTO>>> GetEmployees()
         {
@@ -37,7 +35,7 @@ namespace Shree_API_AWS.Controllers
 
         // GET: api/Employees/5
         [HttpGet("{empId}")]
-        //[Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "guest,user,admin")]
         [EncryptResponse]
         public async Task<ActionResult<Employee_DTO>> GetEmployee(string empId)
         {
@@ -54,7 +52,7 @@ namespace Shree_API_AWS.Controllers
         // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{empId}")]
-        //[Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "user,admin")]
         [EncryptResponse]
         public async Task<IActionResult> PutEmployee(string empId, Employee_DTO employee)
         {
@@ -102,7 +100,7 @@ namespace Shree_API_AWS.Controllers
         // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        //[Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "user,admin")]
         [EncryptResponse]
         public async Task<ActionResult<Employee_DTO>> PostEmployee(Employee_DTO employee)
         {
@@ -143,7 +141,7 @@ namespace Shree_API_AWS.Controllers
 
         // DELETE: api/Employees/5
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "user,admin")]
         [EncryptResponse]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
