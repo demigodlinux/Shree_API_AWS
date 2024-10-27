@@ -19,7 +19,7 @@ public partial class Employee
 
     public string? Ecname { get; set; }
 
-    public int? Ecnumber { get; set; }
+    public long? Ecnumber { get; set; }
 
     public string? Position { get; set; }
 

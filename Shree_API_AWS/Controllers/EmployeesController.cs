@@ -54,7 +54,7 @@ namespace Shree_API_AWS.Controllers
         [HttpPut("{empId}")]
         [Authorize(Roles = "user,admin")]
         [EncryptResponse]
-        public async Task<IActionResult> PutEmployee(string empId, Employee_DTO employee)
+        public async Task<IActionResult> PutEmployee(string empId, [FromBody] Employee_DTO employee)
         {
             var employeeDetail = new Employee()
             {
@@ -136,25 +136,27 @@ namespace Shree_API_AWS.Controllers
             _context.Employees.Add(employeeDetail);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+            return Ok(employee);
         }
 
         // DELETE: api/Employees/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "user,admin")]
         [EncryptResponse]
-        public async Task<IActionResult> DeleteEmployee(int id)
+        public async Task<IActionResult> DeleteEmployee(string id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _context.Employees
+                .FirstOrDefaultAsync(ow => ow.EmployeeId == id);
+
             if (employee == null)
             {
-                return NotFound();
+                return NoContent();
             }
 
             _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Deleted");
         }
 
         private bool EmployeeExists(string id)
