@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Shree_API_AWS.Attributes;
 using Shree_API_AWS.Context;
 using Shree_API_AWS.Models;
 using System.Data;
@@ -9,6 +11,7 @@ namespace Shree_API_AWS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EmployeeAttendancesController : ControllerBase
     {
         private readonly ShreedbContext _context;
@@ -20,13 +23,17 @@ namespace Shree_API_AWS.Controllers
 
         // GET: api/EmployeeAttendances
         [HttpGet]
+        [Authorize(Roles = "user,admin")]
+        [EncryptResponse]
         public async Task<ActionResult<IEnumerable<EmployeeAttendance>>> GetEmployeeAttendances()
         {
-            return await _context.EmployeeAttendances.ToListAsync();
+            return Ok(await _context.EmployeeAttendances.ToListAsync());
         }
 
         // GET: api/EmployeeAttendances/5
         [HttpGet("{empId}")]
+        [Authorize(Roles = "user,admin")]
+        [EncryptResponse]
         public async Task<ActionResult<EmployeeAttendance>> GetEmployeeAttendance(string empId)
         {
             var employeeAttendance = await _context.EmployeeAttendances
@@ -37,7 +44,7 @@ namespace Shree_API_AWS.Controllers
                 return NotFound();
             }
 
-            return employeeAttendance;
+            return Ok(employeeAttendance);
         }
 
         // PUT: api/EmployeeAttendances/5
