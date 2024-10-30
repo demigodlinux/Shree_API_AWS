@@ -17,9 +17,9 @@ namespace Shree_API_AWS.Controllers
     [Authorize]
     public class LogEmployeeAttendancesController : ControllerBase
     {
-        private readonly ShreedbContext _context;
+        private readonly MasterContext _context;
 
-        public LogEmployeeAttendancesController(ShreedbContext context)
+        public LogEmployeeAttendancesController(MasterContext context)
         {
             _context = context;
         }

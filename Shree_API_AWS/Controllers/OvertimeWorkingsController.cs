@@ -15,9 +15,9 @@ namespace Shree_API_AWS.Controllers
     [ApiController]
     public class OvertimeWorkingsController : ControllerBase
     {
-        private readonly ShreedbContext _context;
+        private readonly MasterContext _context;
 
-        public OvertimeWorkingsController(ShreedbContext context)
+        public OvertimeWorkingsController(MasterContext context)
         {
             _context = context;
         }

@@ -14,10 +14,10 @@ namespace Shree_API_AWS.Controllers
     [Authorize]
     public class EmployeesController : ControllerBase
     {
-        private readonly ShreedbContext _context;
+        private readonly MasterContext _context;
         private IMapper _mapper { get; set; }
 
-        public EmployeesController(ShreedbContext context, IMapper mapper)
+        public EmployeesController(MasterContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

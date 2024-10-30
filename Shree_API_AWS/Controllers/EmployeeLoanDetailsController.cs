@@ -15,9 +15,9 @@ namespace Shree_API_AWS.Controllers
     [ApiController]
     public class EmployeeLoanDetailsController : ControllerBase
     {
-        private readonly ShreedbContext _context;
+        private readonly MasterContext _context;
 
-        public EmployeeLoanDetailsController(ShreedbContext context)
+        public EmployeeLoanDetailsController(MasterContext context)
         {
             _context = context;
         }

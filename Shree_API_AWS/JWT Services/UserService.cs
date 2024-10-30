@@ -7,9 +7,9 @@ namespace Shree_API_AWS.Services
 {
     public class UserService : IUser
     {
-        private readonly ShreedbContext _context;
+        private readonly MasterContext _context;
 
-        public UserService(ShreedbContext context) {
+        public UserService(MasterContext context) {
             _context = context;
         }
 
