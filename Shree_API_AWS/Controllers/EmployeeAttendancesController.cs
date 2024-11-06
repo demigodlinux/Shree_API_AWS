@@ -14,9 +14,9 @@ namespace Shree_API_AWS.Controllers
     [Authorize]
     public class EmployeeAttendancesController : ControllerBase
     {
-        private readonly MasterContext _context;
+        private readonly ShreeDbContext_Postgres _context;
 
-        public EmployeeAttendancesController(MasterContext context)
+        public EmployeeAttendancesController(ShreeDbContext_Postgres context)
         {
             _context = context;
         }
@@ -25,19 +25,19 @@ namespace Shree_API_AWS.Controllers
         [HttpGet]
         [Authorize(Roles = "user,admin")]
         [EncryptResponse]
-        public async Task<ActionResult<IEnumerable<EmployeeAttendance>>> GetEmployeeAttendances()
+        public async Task<ActionResult<IEnumerable<Employeeattendance>>> GetEmployeeAttendances()
         {
-            return Ok(await _context.EmployeeAttendances.ToListAsync());
+            return Ok(await _context.Employeeattendances.ToListAsync());
         }
 
         // GET: api/EmployeeAttendances/5
         [HttpGet("{empId}")]
         [Authorize(Roles = "user,admin")]
         [EncryptResponse]
-        public async Task<ActionResult<EmployeeAttendance>> GetEmployeeAttendance(string empId)
+        public async Task<ActionResult<Employeeattendance>> GetEmployeeAttendance(string empId)
         {
-            var employeeAttendance = await _context.EmployeeAttendances
-                .Where(x => x.EmployeeId == empId).FirstOrDefaultAsync();
+            var employeeAttendance = await _context.Employeeattendances
+                .Where(x => x.Employeeid == empId).FirstOrDefaultAsync();
 
             if (employeeAttendance == null)
             {
@@ -50,10 +50,10 @@ namespace Shree_API_AWS.Controllers
         // PUT: api/EmployeeAttendances/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{empId}")]
-        public async Task<IActionResult> PutEmployeeAttendance(string empId, EmployeeAttendance employeeAttendance)
+        public async Task<IActionResult> PutEmployeeAttendance(string empId, Employeeattendance employeeAttendance)
         {
-            var existingRecord = await _context.EmployeeAttendances
-                .FirstOrDefaultAsync(ow => ow.EmployeeId == employeeAttendance.EmployeeId);
+            var existingRecord = await _context.Employeeattendances
+                .FirstOrDefaultAsync(ow => ow.Employeeid == employeeAttendance.Employeeid);
 
             if (existingRecord == null)
             {
@@ -65,8 +65,8 @@ namespace Shree_API_AWS.Controllers
                 // Create DataTable
                 DataTable attendanceTable = new DataTable();
                 // Define columns according to the structure
-                attendanceTable.Columns.Add("EmployeeID", typeof(string));
-                attendanceTable.Columns.Add("EntryForMonth", typeof(string));
+                attendanceTable.Columns.Add("Employeeid", typeof(string));
+                attendanceTable.Columns.Add("Entryformonth", typeof(string));
                 attendanceTable.Columns.Add("DataEnteredOn", typeof(DateTime));
                 attendanceTable.Columns.Add("DataEnteredBy", typeof(string));
                 attendanceTable.Columns.Add("IsPresent", typeof(bool));
@@ -104,7 +104,7 @@ namespace Shree_API_AWS.Controllers
                 };
 
                 // Execute the stored procedure
-                await _context.Database.ExecuteSqlRawAsync("EXEC usp_Set_AttendanceRecords @Action @EmployeeAttendance", actionParameter, EmpAttndparameter);
+                await _context.Database.ExecuteSqlRawAsync("SELECT usp_set_attendance_records(@Action, @EmployeeAttendance)", actionParameter, EmpAttndparameter);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -124,22 +124,22 @@ namespace Shree_API_AWS.Controllers
         // POST: api/EmployeeAttendances
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<EmployeeAttendance>> PostEmployeeAttendance(EmployeeAttendance employeeAttendance)
+        public async Task<ActionResult<Employeeattendance>> PostEmployeeAttendance(Employeeattendance employeeAttendance)
         {
             // Check if the record already exists
-            var existingRecord = await _context.EmployeeAttendances
-                .FirstOrDefaultAsync(ow => ow.EmployeeId == employeeAttendance.EmployeeId && ow.EntryForMonth == employeeAttendance.EntryForMonth);
+            var existingRecord = await _context.Employeeattendances
+                .FirstOrDefaultAsync(ow => ow.Employeeid == employeeAttendance.Employeeid && ow.Entryformonth == employeeAttendance.Entryformonth);
 
             if (existingRecord != null)
             {
-                return Conflict("Data already exists for the specified EmployeeId and EntryForMonth.");
+                return Conflict("Data already exists for the specified Employeeid and Entryformonth.");
             }
 
             // Create DataTable
             DataTable attendanceTable = new DataTable();
             // Define columns according to the structure
-            attendanceTable.Columns.Add("EmployeeID", typeof(string));           
-            attendanceTable.Columns.Add("EntryForMonth", typeof(string));        
+            attendanceTable.Columns.Add("Employeeid", typeof(string));           
+            attendanceTable.Columns.Add("Entryformonth", typeof(string));        
             attendanceTable.Columns.Add("DataEnteredOn", typeof(DateTime));      
             attendanceTable.Columns.Add("DataEnteredBy", typeof(string));         
             attendanceTable.Columns.Add("IsPresent", typeof(bool));              
@@ -177,21 +177,21 @@ namespace Shree_API_AWS.Controllers
             };
 
             // Execute the stored procedure
-            await _context.Database.ExecuteSqlRawAsync("EXEC usp_Set_AttendanceRecords @Action @EmployeeAttendance", actionParameter, EmpAttndparameter);
-            return CreatedAtAction("GetEmployeeAttendance", new { empId = employeeAttendance.EmployeeId }, employeeAttendance);
+            await _context.Database.ExecuteSqlRawAsync("SELECT usp_set_attendance_records(@Action, @EmployeeAttendance)", actionParameter, EmpAttndparameter);
+            return CreatedAtAction("GetEmployeeAttendance", new { empId = employeeAttendance.Employeeid }, employeeAttendance);
         }
 
         // DELETE: api/EmployeeAttendances/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployeeAttendance(int id)
         {
-            var employeeAttendance = await _context.EmployeeAttendances.FindAsync(id);
+            var employeeAttendance = await _context.Employeeattendances.FindAsync(id);
             if (employeeAttendance == null)
             {
                 return NotFound();
             }
 
-            _context.EmployeeAttendances.Remove(employeeAttendance);
+            _context.Employeeattendances.Remove(employeeAttendance);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -199,7 +199,7 @@ namespace Shree_API_AWS.Controllers
 
         private bool EmployeeAttendanceExists(string id)
         {
-            return _context.EmployeeAttendances.Any(e => e.EmployeeId == id);
+            return _context.Employeeattendances.Any(e => e.Employeeid == id);
         }
     }
 }

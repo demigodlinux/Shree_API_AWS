@@ -7,15 +7,15 @@ public partial class Employee
 {
     public int Id { get; set; }
 
-    public string EmployeeId { get; set; } = null!;
+    public string Employeeid { get; set; } = null!;
 
-    public string FirstName { get; set; } = null!;
+    public string Firstname { get; set; } = null!;
 
-    public string? LastName { get; set; }
+    public string? Lastname { get; set; }
 
-    public DateTime? DateOfBirth { get; set; }
+    public DateTime? Dateofbirth { get; set; }
 
-    public long? MobileNumber { get; set; }
+    public long? Mobilenumber { get; set; }
 
     public string? Ecname { get; set; }
 
@@ -23,7 +23,7 @@ public partial class Employee
 
     public string? Position { get; set; }
 
-    public DateTime? HireDate { get; set; }
+    public DateTime? Hiredate { get; set; }
 
     public decimal? Salary { get; set; }
 
@@ -31,19 +31,19 @@ public partial class Employee
 
     public decimal? Hra { get; set; }
 
-    public decimal? SpecialAllowance { get; set; }
+    public decimal? Specialallowance { get; set; }
 
-    public string? NativePlace { get; set; }
+    public string? Nativeplace { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool? Isactive { get; set; }
 
-    public virtual ICollection<EmployeeAttendance> EmployeeAttendances { get; set; } = new List<EmployeeAttendance>();
+    public virtual ICollection<Employeeattendance> Employeeattendances { get; set; } = new List<Employeeattendance>();
 
-    public virtual ICollection<EmployeeLoanDetail> EmployeeLoanDetails { get; set; } = new List<EmployeeLoanDetail>();
+    public virtual ICollection<Employeeloandetail> Employeeloandetails { get; set; } = new List<Employeeloandetail>();
 
-    public virtual ICollection<LogEmployeeAttendance> LogEmployeeAttendances { get; set; } = new List<LogEmployeeAttendance>();
+    public virtual ICollection<LogEmployeeattendance> LogEmployeeattendances { get; set; } = new List<LogEmployeeattendance>();
 
-    public virtual ICollection<OvertimeWorking> OvertimeWorkings { get; set; } = new List<OvertimeWorking>();
+    public virtual ICollection<Overtimeworking> Overtimeworkings { get; set; } = new List<Overtimeworking>();
 
-    public virtual ICollection<UserDetailsTable> UserDetailsTables { get; set; } = new List<UserDetailsTable>();
+    public virtual ICollection<Userdetailstable> Userdetailstables { get; set; } = new List<Userdetailstable>();
 }

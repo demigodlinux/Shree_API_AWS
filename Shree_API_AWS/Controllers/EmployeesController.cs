@@ -14,10 +14,10 @@ namespace Shree_API_AWS.Controllers
     [Authorize]
     public class EmployeesController : ControllerBase
     {
-        private readonly MasterContext _context;
+        private readonly ShreeDbContext_Postgres _context;
         private IMapper _mapper { get; set; }
 
-        public EmployeesController(MasterContext context, IMapper mapper)
+        public EmployeesController(ShreeDbContext_Postgres context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -39,7 +39,7 @@ namespace Shree_API_AWS.Controllers
         [EncryptResponse]
         public async Task<ActionResult<Employee_DTO>> GetEmployee(string empId)
         {
-            var employee = await _context.Employees.Where(x => x.EmployeeId == empId).FirstOrDefaultAsync();
+            var employee = await _context.Employees.Where(x => x.Employeeid == empId).FirstOrDefaultAsync();
 
             if (employee == null)
             {
@@ -59,21 +59,21 @@ namespace Shree_API_AWS.Controllers
             var employeeDetail = new Employee()
             {
                 Id = employee.Id,
-                EmployeeId = employee.EmployeeId,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                DateOfBirth = employee.DateOfBirth,
-                MobileNumber = employee.MobileNumber,
+                Employeeid = employee.EmployeeId,
+                Firstname = employee.FirstName,
+                Lastname = employee.LastName,
+                Dateofbirth = employee.DateOfBirth,
+                Mobilenumber = employee.MobileNumber,
                 Ecname = employee.Ecname,
                 Ecnumber = employee.Ecnumber,
                 Position = employee.Position,
-                HireDate = employee.HireDate,
-                NativePlace = employee.NativePlace,
+                Hiredate = employee.HireDate,
+                Nativeplace = employee.NativePlace,
                 Salary = employee.Salary,
                 Basic = employee.Basic,
                 Hra = employee.Hra,
-                SpecialAllowance = employee.SpecialAllowance,
-                IsActive = employee.IsActive,
+                Specialallowance = employee.SpecialAllowance,
+                Isactive = employee.IsActive,
             };
 
             _context.Entry(employeeDetail).State = EntityState.Modified;
@@ -106,31 +106,31 @@ namespace Shree_API_AWS.Controllers
         {
             // Check if the record already exists
             var existingRecord = await _context.Employees
-                .FirstOrDefaultAsync(ow => ow.EmployeeId == employee.EmployeeId);
+                .FirstOrDefaultAsync(ow => ow.Employeeid == employee.EmployeeId);
 
             if (existingRecord != null)
             {
-                return Conflict("Data already exists for the specified EmployeeId and EntryForMonth.");
+                return Conflict("Data already exists for the specified Employeeid and EntryForMonth.");
             }
 
             var employeeDetail = new Employee()
             {   
                 Id = employee.Id,
-                EmployeeId = employee.EmployeeId,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                DateOfBirth = employee.DateOfBirth,
-                MobileNumber = employee.MobileNumber,
+                Employeeid = employee.EmployeeId,
+                Firstname = employee.FirstName,
+                Lastname = employee.LastName,
+                Dateofbirth = employee.DateOfBirth,
+                Mobilenumber = employee.MobileNumber,
                 Ecname = employee.Ecname,
                 Ecnumber = employee.Ecnumber,
                 Position = employee.Position,
-                HireDate = employee.HireDate,
-                NativePlace = employee.NativePlace,
+                Hiredate = employee.HireDate,
+                Nativeplace = employee.NativePlace,
                 Salary = employee.Salary,
                 Basic = employee.Basic,
                 Hra = employee.Hra,
-                SpecialAllowance = employee.SpecialAllowance,
-                IsActive = employee.IsActive,
+                Specialallowance = employee.SpecialAllowance,
+                Isactive = employee.IsActive,
             };
 
             _context.Employees.Add(employeeDetail);
@@ -146,7 +146,7 @@ namespace Shree_API_AWS.Controllers
         public async Task<IActionResult> DeleteEmployee(string id)
         {
             var employee = await _context.Employees
-                .FirstOrDefaultAsync(ow => ow.EmployeeId == id);
+                .FirstOrDefaultAsync(ow => ow.Employeeid == id);
 
             if (employee == null)
             {
@@ -161,7 +161,7 @@ namespace Shree_API_AWS.Controllers
 
         private bool EmployeeExists(string id)
         {
-            return _context.Employees.Any(e => e.EmployeeId == id);
+            return _context.Employees.Any(e => e.Employeeid == id);
         }
     }
 }

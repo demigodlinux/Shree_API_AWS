@@ -16,8 +16,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 // Register MasterContext with the connection string from appsettings.json or environment variable
-builder.Services.AddDbContext<MasterContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection"))); // or your actual connection string
+builder.Services.AddDbContext<ShreeDbContext_Postgres>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection"))); // or your actual connection string
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<IToken, TokenService>();
 builder.Services.AddScoped<IUser, UserService>();

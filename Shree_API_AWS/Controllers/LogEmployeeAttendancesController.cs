@@ -17,28 +17,28 @@ namespace Shree_API_AWS.Controllers
     [Authorize]
     public class LogEmployeeAttendancesController : ControllerBase
     {
-        private readonly MasterContext _context;
+        private readonly ShreeDbContext_Postgres _context;
 
-        public LogEmployeeAttendancesController(MasterContext context)
+        public LogEmployeeAttendancesController(ShreeDbContext_Postgres context)
         {
             _context = context;
         }
 
-        // GET: api/LogEmployeeAttendances
+        // GET: api/LogEmployeeattendances
         [HttpGet]
         [HttpGet]
         [Authorize(Roles = "user,admin")]
         [EncryptResponse]
-        public async Task<ActionResult<IEnumerable<LogEmployeeAttendance>>> GetLogEmployeeAttendances()
+        public async Task<ActionResult<IEnumerable<LogEmployeeattendance>>> GetLogEmployeeAttendances()
         {
-            return Ok(await _context.LogEmployeeAttendances.ToListAsync());
+            return Ok(await _context.LogEmployeeattendances.ToListAsync());
         }
 
-        // GET: api/LogEmployeeAttendances/5
+        // GET: api/LogEmployeeattendances/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<LogEmployeeAttendance>> GetLogEmployeeAttendance(int id)
+        public async Task<ActionResult<LogEmployeeattendance>> GetLogEmployeeAttendance(int id)
         {
-            var logEmployeeAttendance = await _context.LogEmployeeAttendances.FindAsync(id);
+            var logEmployeeAttendance = await _context.LogEmployeeattendances.FindAsync(id);
 
             if (logEmployeeAttendance == null)
             {
@@ -48,10 +48,10 @@ namespace Shree_API_AWS.Controllers
             return logEmployeeAttendance;
         }
 
-        // PUT: api/LogEmployeeAttendances/5
+        // PUT: api/LogEmployeeattendances/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutLogEmployeeAttendance(int id, LogEmployeeAttendance logEmployeeAttendance)
+        public async Task<IActionResult> PutLogEmployeeAttendance(int id, LogEmployeeattendance logEmployeeAttendance)
         {
             if (id != logEmployeeAttendance.Id)
             {
@@ -79,28 +79,28 @@ namespace Shree_API_AWS.Controllers
             return NoContent();
         }
 
-        // POST: api/LogEmployeeAttendances
+        // POST: api/LogEmployeeattendances
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<LogEmployeeAttendance>> PostLogEmployeeAttendance(LogEmployeeAttendance logEmployeeAttendance)
+        public async Task<ActionResult<LogEmployeeattendance>> PostLogEmployeeAttendance(LogEmployeeattendance logEmployeeAttendance)
         {
-            _context.LogEmployeeAttendances.Add(logEmployeeAttendance);
+            _context.LogEmployeeattendances.Add(logEmployeeAttendance);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetLogEmployeeAttendance", new { id = logEmployeeAttendance.Id }, logEmployeeAttendance);
         }
 
-        // DELETE: api/LogEmployeeAttendances/5
+        // DELETE: api/LogEmployeeattendances/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLogEmployeeAttendance(int id)
         {
-            var logEmployeeAttendance = await _context.LogEmployeeAttendances.FindAsync(id);
+            var logEmployeeAttendance = await _context.LogEmployeeattendances.FindAsync(id);
             if (logEmployeeAttendance == null)
             {
                 return NotFound();
             }
 
-            _context.LogEmployeeAttendances.Remove(logEmployeeAttendance);
+            _context.LogEmployeeattendances.Remove(logEmployeeAttendance);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -108,7 +108,7 @@ namespace Shree_API_AWS.Controllers
 
         private bool LogEmployeeAttendanceExists(int id)
         {
-            return _context.LogEmployeeAttendances.Any(e => e.Id == id);
+            return _context.LogEmployeeattendances.Any(e => e.Id == id);
         }
     }
 }

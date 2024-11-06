@@ -3,35 +3,35 @@ using System.Collections.Generic;
 
 namespace Shree_API_AWS.Models;
 
-public partial class LogEmployeeAttendance
+public partial class LogEmployeeattendance
 {
     public int Id { get; set; }
 
-    public string EmployeeId { get; set; } = null!;
+    public string Employeeid { get; set; } = null!;
 
-    public int? EmployeeAttendId { get; set; }
+    public int? Employeeattendid { get; set; }
 
-    public string? EntryForMonth { get; set; }
+    public string? Entryformonth { get; set; }
 
-    public DateTime? DataEnteredOn { get; set; }
+    public DateTime? Dataenteredon { get; set; }
 
-    public string? DataEnteredBy { get; set; }
+    public string? Dataenteredby { get; set; }
 
-    public DateTime? AttendanceDate { get; set; }
+    public DateTime? Attendancedate { get; set; }
 
-    public bool? IsPresent { get; set; }
+    public bool? Ispresent { get; set; }
 
-    public bool? IsAbsent { get; set; }
+    public bool? Isabsent { get; set; }
 
-    public bool? IsPaidLeave { get; set; }
+    public bool? Ispaidleave { get; set; }
 
-    public bool? IsLate { get; set; }
+    public bool? Islate { get; set; }
 
-    public bool? IsHalfDay { get; set; }
+    public bool? Ishalfday { get; set; }
 
-    public bool? IsOnDuty { get; set; }
+    public bool? Isonduty { get; set; }
 
     public virtual Employee Employee { get; set; } = null!;
 
-    public virtual EmployeeAttendance? EmployeeAttend { get; set; }
+    public virtual Employeeattendance? Employeeattend { get; set; }
 }

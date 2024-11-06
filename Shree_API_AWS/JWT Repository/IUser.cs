@@ -4,6 +4,6 @@ namespace Shree_API_AWS.Repository
 {
     public interface IUser
     {
-        public Task<UserDetailsTable> AuthenticateUser(string username, string password);
+        public Task<Userdetailstable> AuthenticateUser(string username, string password);
     }
 }

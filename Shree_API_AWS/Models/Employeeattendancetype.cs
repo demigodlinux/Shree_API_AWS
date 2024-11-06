@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace Shree_API_AWS.Models;
 
-public partial class Employeeattendance
+public partial class Employeeattendancetype
 {
-    public int Id { get; set; }
-
     public string Employeeid { get; set; } = null!;
 
     public string? Entryformonth { get; set; }
@@ -42,8 +40,4 @@ public partial class Employeeattendance
     public DateTime? Lasthalfdaydate { get; set; }
 
     public int? Totaldayshalfdays { get; set; }
-
-    public virtual Employee Employee { get; set; } = null!;
-
-    public virtual ICollection<LogEmployeeattendance> LogEmployeeattendances { get; set; } = new List<LogEmployeeattendance>();
 }

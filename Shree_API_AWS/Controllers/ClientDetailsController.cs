@@ -12,9 +12,9 @@ namespace Shree_API_AWS.Controllers
     [Authorize]
     public class ClientDetailsController : ControllerBase
     {
-        private readonly MasterContext _context;
+        private readonly ShreeDbContext_Postgres _context;
 
-        public ClientDetailsController(MasterContext context)
+        public ClientDetailsController(ShreeDbContext_Postgres context)
         {
             _context = context;
         }

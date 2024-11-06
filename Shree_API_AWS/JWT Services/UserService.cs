@@ -7,16 +7,16 @@ namespace Shree_API_AWS.Services
 {
     public class UserService : IUser
     {
-        private readonly MasterContext _context;
+        private readonly ShreeDbContext_Postgres _context;
 
-        public UserService(MasterContext context) {
+        public UserService(ShreeDbContext_Postgres context) {
             _context = context;
         }
 
-        public async Task<UserDetailsTable> AuthenticateUser(string username, string password)
+        public async Task<Userdetailstable> AuthenticateUser(string username, string password)
         {
-            List<UserDetailsTable> userDetails = await _context.UserDetailsTables.ToListAsync();
-            var users = userDetails.Find(x => x.UserName.Equals(username, StringComparison.InvariantCultureIgnoreCase) && x.Password.Equals(password));
+            List<Userdetailstable> userDetails = await _context.Userdetailstables.ToListAsync();
+            var users = userDetails.Find(x => x.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase) && x.Password.Equals(password));
             return users;
         }
     }

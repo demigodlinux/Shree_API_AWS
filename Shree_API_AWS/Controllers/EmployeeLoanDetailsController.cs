@@ -15,25 +15,25 @@ namespace Shree_API_AWS.Controllers
     [ApiController]
     public class EmployeeLoanDetailsController : ControllerBase
     {
-        private readonly MasterContext _context;
+        private readonly ShreeDbContext_Postgres _context;
 
-        public EmployeeLoanDetailsController(MasterContext context)
+        public EmployeeLoanDetailsController(ShreeDbContext_Postgres context)
         {
             _context = context;
         }
 
-        // GET: api/EmployeeLoanDetails
+        // GET: api/Employeeloandetails
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeLoanDetail>>> GetEmployeeLoanDetails()
+        public async Task<ActionResult<IEnumerable<Employeeloandetail>>> GetEmployeeLoanDetails()
         {
-            return await _context.EmployeeLoanDetails.ToListAsync();
+            return await _context.Employeeloandetails.ToListAsync();
         }
 
-        // GET: api/EmployeeLoanDetails/5
+        // GET: api/Employeeloandetails/5
         [HttpGet("{empId}")]
-        public async Task<ActionResult<EmployeeLoanDetail>> GetEmployeeLoanDetail(string empId)
+        public async Task<ActionResult<Employeeloandetail>> GetEmployeeLoanDetail(string empId)
         {
-            var employeeLoanDetail = await _context.EmployeeLoanDetails.Where(x => x.EmployeeId == empId).FirstOrDefaultAsync();
+            var employeeLoanDetail = await _context.Employeeloandetails.Where(x => x.Employeeid == empId).FirstOrDefaultAsync();
 
             if (employeeLoanDetail == null)
             {
@@ -43,10 +43,10 @@ namespace Shree_API_AWS.Controllers
             return employeeLoanDetail;
         }
 
-        // PUT: api/EmployeeLoanDetails/5
+        // PUT: api/Employeeloandetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{empId}")]
-        public async Task<IActionResult> PutEmployeeLoanDetail(string empId, EmployeeLoanDetail employeeLoanDetail)
+        public async Task<IActionResult> PutEmployeeLoanDetail(string empId, Employeeloandetail employeeLoanDetail)
         {
             _context.Entry(employeeLoanDetail).State = EntityState.Modified;
 
@@ -69,28 +69,28 @@ namespace Shree_API_AWS.Controllers
             return NoContent();
         }
 
-        // POST: api/EmployeeLoanDetails
+        // POST: api/Employeeloandetails
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<EmployeeLoanDetail>> PostEmployeeLoanDetail(EmployeeLoanDetail employeeLoanDetail)
+        public async Task<ActionResult<Employeeloandetail>> PostEmployeeLoanDetail(Employeeloandetail employeeLoanDetail)
         {
-            _context.EmployeeLoanDetails.Add(employeeLoanDetail);
+            _context.Employeeloandetails.Add(employeeLoanDetail);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetEmployeeLoanDetail", new { id = employeeLoanDetail.Id }, employeeLoanDetail);
         }
 
-        // DELETE: api/EmployeeLoanDetails/5
+        // DELETE: api/Employeeloandetails/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployeeLoanDetail(int id)
         {
-            var employeeLoanDetail = await _context.EmployeeLoanDetails.FindAsync(id);
+            var employeeLoanDetail = await _context.Employeeloandetails.FindAsync(id);
             if (employeeLoanDetail == null)
             {
                 return NotFound();
             }
 
-            _context.EmployeeLoanDetails.Remove(employeeLoanDetail);
+            _context.Employeeloandetails.Remove(employeeLoanDetail);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -98,7 +98,7 @@ namespace Shree_API_AWS.Controllers
 
         private bool EmployeeLoanDetailExists(string id)
         {
-            return _context.EmployeeLoanDetails.Any(e => e.EmployeeId == id);
+            return _context.Employeeloandetails.Any(e => e.Employeeid == id);
         }
     }
 }

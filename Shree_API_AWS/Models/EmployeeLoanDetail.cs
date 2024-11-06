@@ -3,33 +3,33 @@ using System.Collections.Generic;
 
 namespace Shree_API_AWS.Models;
 
-public partial class EmployeeLoanDetail
+public partial class Employeeloandetail
 {
     public int Id { get; set; }
 
-    public string EmployeeId { get; set; } = null!;
+    public string Employeeid { get; set; } = null!;
 
-    public string? EntryForMonth { get; set; }
+    public string? Entryformonth { get; set; }
 
-    public DateTime? DataEnteredOn { get; set; }
+    public DateTime? Dataenteredon { get; set; }
 
-    public string? DataEnteredBy { get; set; }
+    public string? Dataenteredby { get; set; }
 
-    public DateTime? LoanIssuedOn { get; set; }
+    public DateTime? Loanissuedon { get; set; }
 
-    public decimal? LoanAmount { get; set; }
+    public decimal? Loanamount { get; set; }
 
-    public int? TotalInstallments { get; set; }
+    public int? Totalinstallments { get; set; }
 
-    public decimal? InstallmentAmount { get; set; }
+    public decimal? Installmentamount { get; set; }
 
-    public int? InstallmentsCompleted { get; set; }
+    public int? Installmentscompleted { get; set; }
 
-    public decimal? OutstandingLoanAmount { get; set; }
+    public decimal? Outstandingloanamount { get; set; }
 
-    public DateTime? LastLoanAmountPaid { get; set; }
+    public DateTime? Lastloanamountpaid { get; set; }
 
-    public bool? IsLoanRepayed { get; set; }
+    public bool? Isloanrepayed { get; set; }
 
     public virtual Employee Employee { get; set; } = null!;
 }

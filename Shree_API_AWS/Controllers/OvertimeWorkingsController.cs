@@ -15,26 +15,26 @@ namespace Shree_API_AWS.Controllers
     [ApiController]
     public class OvertimeWorkingsController : ControllerBase
     {
-        private readonly MasterContext _context;
+        private readonly ShreeDbContext_Postgres _context;
 
-        public OvertimeWorkingsController(MasterContext context)
+        public OvertimeWorkingsController(ShreeDbContext_Postgres context)
         {
             _context = context;
         }
 
-        // GET: api/OvertimeWorkings
+        // GET: api/Overtimeworkings
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OvertimeWorking>>> GetOvertimeWorkings()
+        public async Task<ActionResult<IEnumerable<Overtimeworking>>> GetOvertimeWorkings()
         {
-            return await _context.OvertimeWorkings.ToListAsync();
+            return await _context.Overtimeworkings.ToListAsync();
         }
 
-        // GET: api/OvertimeWorkings/5
+        // GET: api/Overtimeworkings/5
         [HttpGet("{empId}")]
-        public async Task<ActionResult<OvertimeWorking>> GetOvertimeWorking(string empId)
+        public async Task<ActionResult<Overtimeworking>> GetOvertimeWorking(string empId)
         {
-            var overtimeWorking = await _context.OvertimeWorkings
-                .Where(ow => ow.EmployeeId == empId).FirstOrDefaultAsync();
+            var overtimeWorking = await _context.Overtimeworkings
+                .Where(ow => ow.Employeeid == empId).FirstOrDefaultAsync();
 
             if (overtimeWorking == null)
             {
@@ -44,9 +44,9 @@ namespace Shree_API_AWS.Controllers
             return overtimeWorking;
         }
 
-        // PUT: api/OvertimeWorkings/{empId}
+        // PUT: api/Overtimeworkings/{empId}
         [HttpPut("{empId}/{entryForMonth}")]
-        public async Task<IActionResult> PutOvertimeWorking(string empId, string entryForMonth, OvertimeWorking overtimeWorking)
+        public async Task<IActionResult> PutOvertimeWorking(string empId, string entryForMonth, Overtimeworking overtimeWorking)
         {
             // Set the entity state to modified
             _context.Entry(overtimeWorking).State = EntityState.Modified;
@@ -71,37 +71,37 @@ namespace Shree_API_AWS.Controllers
         }
 
 
-        // POST: api/OvertimeWorkings
+        // POST: api/Overtimeworkings
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<OvertimeWorking>> PostOvertimeWorking(OvertimeWorking overtimeWorking)
+        public async Task<ActionResult<Overtimeworking>> PostOvertimeWorking(Overtimeworking overtimeWorking)
         {
             // Check if the record already exists
-            var existingRecord = await _context.OvertimeWorkings
-                .FirstOrDefaultAsync(ow => ow.EmployeeId == overtimeWorking.EmployeeId && ow.EntryForMonth == overtimeWorking.EntryForMonth);
+            var existingRecord = await _context.Overtimeworkings
+                .FirstOrDefaultAsync(ow => ow.Employeeid == overtimeWorking.Employeeid && ow.Entryformonth == overtimeWorking.Entryformonth);
 
             if (existingRecord != null)
             {
-                return Conflict("Data already exists for the specified EmployeeId and EntryForMonth.");
+                return Conflict("Data already exists for the specified Employeeid and EntryForMonth.");
             }
 
-            _context.OvertimeWorkings.Add(overtimeWorking);
+            _context.Overtimeworkings.Add(overtimeWorking);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOvertimeWorking", new { empId = overtimeWorking.EmployeeId }, overtimeWorking);
+            return CreatedAtAction("GetOvertimeWorking", new { empId = overtimeWorking.Employeeid }, overtimeWorking);
         }
 
-        // DELETE: api/OvertimeWorkings/5
+        // DELETE: api/Overtimeworkings/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOvertimeWorking(int id)
         {
-            var overtimeWorking = await _context.OvertimeWorkings.FindAsync(id);
+            var overtimeWorking = await _context.Overtimeworkings.FindAsync(id);
             if (overtimeWorking == null)
             {
                 return NotFound();
             }
 
-            _context.OvertimeWorkings.Remove(overtimeWorking);
+            _context.Overtimeworkings.Remove(overtimeWorking);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -109,7 +109,7 @@ namespace Shree_API_AWS.Controllers
 
         private bool OvertimeWorkingExists(string id)
         {
-            return _context.OvertimeWorkings.Any(e => e.EmployeeId == id);
+            return _context.Overtimeworkings.Any(e => e.Employeeid == id);
         }
     }
 }

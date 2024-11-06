@@ -14,7 +14,7 @@ namespace Shree_API_AWS.Services
             this.configuration = configuration;
         }
 
-        public Task<string> CreateToken(UserDetailsTable user)
+        public Task<string> CreateToken(Userdetailstable user)
         {
 
             var claims = new List<Claim>

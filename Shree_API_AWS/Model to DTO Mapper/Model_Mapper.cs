@@ -9,10 +9,10 @@ namespace LearningAPI.Mapper
         public Model_Mapper()
         {
             CreateMap<Employee, Employee_DTO>().ReverseMap();
-            CreateMap<EmployeeAttendance, EmployeeAttendance_DTO>().ReverseMap();
-            CreateMap<EmployeeLoanDetail, EmployeeLoanDetail_DTO>().ReverseMap();
-            CreateMap<LogEmployeeAttendance, LogEmployeeAttendance_DTO>().ReverseMap();
-            CreateMap<OvertimeWorking, OvertimeWorking_DTO>().ReverseMap();
+            CreateMap<Employeeattendance, EmployeeAttendance_DTO>().ReverseMap();
+            CreateMap<Employeeloandetail, EmployeeLoanDetail_DTO>().ReverseMap();
+            CreateMap<LogEmployeeattendance, LogEmployeeAttendance_DTO>().ReverseMap();
+            CreateMap<Overtimeworking, OvertimeWorking_DTO>().ReverseMap();
 
 
         }
