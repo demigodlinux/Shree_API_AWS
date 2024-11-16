@@ -13,8 +13,10 @@ namespace LearningAPI.Mapper
             CreateMap<Employeeloandetail, EmployeeLoanDetail_DTO>().ReverseMap();
             CreateMap<LogEmployeeattendance, LogEmployeeAttendance_DTO>().ReverseMap();
             CreateMap<Overtimeworking, OvertimeWorking_DTO>().ReverseMap();
-
-
+            CreateMap<ClientDetail, ClientDetails_DTO>().ReverseMap();
+            CreateMap<TimesheetdetailsAdmin, TimesheetAdmin_DTO>().ReverseMap();
+            CreateMap<TimesheetdetailsEmployee, TimesheetEmployee_DTO>().ReverseMap();
+            CreateMap<AlertNotification, AlertNotification_DTO>().ReverseMap();
         }
     }
 }

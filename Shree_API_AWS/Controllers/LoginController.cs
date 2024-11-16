@@ -19,12 +19,12 @@ namespace Shree_API_AWS.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(Login login)
         {
-            var auth = await user.AuthenticateUser(
+            Userdetailstable auth = await user.AuthenticateUser(
                 login.UserName, login.Password);
             if (auth != null)
             {
                 var tokens = await token.CreateToken(auth);
-                return Ok(tokens.ToString());
+                return Ok(new {EmployeeId = auth.Employeeid, token = tokens.ToString()});
             }
             return BadRequest("Username or Pass Incorrect!");
 

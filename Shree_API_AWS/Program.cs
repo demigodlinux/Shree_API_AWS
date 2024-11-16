@@ -7,21 +7,11 @@ using Shree_API_AWS.Repository;
 using Shree_API_AWS.Services;
 using System.Text;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-// Register MasterContext with the connection string from appsettings.json or environment variable
-builder.Services.AddDbContext<ShreeDbContext_Postgres>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection"))); // or your actual connection string
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
-builder.Services.AddScoped<IToken, TokenService>();
-builder.Services.AddScoped<IUser, UserService>();
-
 builder.Services.AddSwaggerGen(options =>
 {
     var securityScheme = new OpenApiSecurityScheme
@@ -46,6 +36,16 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// Database context
+builder.Services.AddDbContext<ShreeDbContext_Postgres>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
+
+// Dependency Injection
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddScoped<IToken, TokenService>();
+builder.Services.AddScoped<IUser, UserService>();
+
+// JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -58,11 +58,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     });
 
-// Configure JSON options to prevent camel casing
+// JSON options to prevent camel casing
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.PropertyNamingPolicy = null; // Disable camel casing
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
     });
 
 // Add CORS policy
@@ -88,9 +88,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowAll");
+
+// Apply Authentication and Authorization in correct order
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors("AllowAll");
+
 
 app.MapControllers();
 

@@ -16,19 +16,23 @@ public partial class ShreeDbContext_Postgres : DbContext
     {
     }
 
+    public virtual DbSet<AlertNotification> AlertNotifications { get; set; }
+
     public virtual DbSet<ClientDetail> ClientDetails { get; set; }
 
     public virtual DbSet<Employee> Employees { get; set; }
 
     public virtual DbSet<Employeeattendance> Employeeattendances { get; set; }
 
-    public virtual DbSet<Employeeattendancetype> Employeeattendancetypes { get; set; }
-
     public virtual DbSet<Employeeloandetail> Employeeloandetails { get; set; }
 
     public virtual DbSet<LogEmployeeattendance> LogEmployeeattendances { get; set; }
 
     public virtual DbSet<Overtimeworking> Overtimeworkings { get; set; }
+
+    public virtual DbSet<TimesheetdetailsAdmin> TimesheetdetailsAdmins { get; set; }
+
+    public virtual DbSet<TimesheetdetailsEmployee> TimesheetdetailsEmployees { get; set; }
 
     public virtual DbSet<Userdetailstable> Userdetailstables { get; set; }
 
@@ -38,6 +42,33 @@ public partial class ShreeDbContext_Postgres : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<AlertNotification>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("alert_notifications_pkey");
+
+            entity.ToTable("alert_notifications");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Dataenteredby)
+                .HasMaxLength(100)
+                .HasColumnName("dataenteredby");
+            entity.Property(e => e.Dataenteredon)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("dataenteredon");
+            entity.Property(e => e.Employeeid)
+                .HasMaxLength(20)
+                .HasColumnName("employeeid");
+            entity.Property(e => e.Isadminnotification).HasColumnName("isadminnotification");
+            entity.Property(e => e.Isapproved).HasColumnName("isapproved");
+            entity.Property(e => e.Isemployeenotification).HasColumnName("isemployeenotification");
+            entity.Property(e => e.Isnotificationactive).HasColumnName("isnotificationactive");
+            entity.Property(e => e.Issentback).HasColumnName("issentback");
+            entity.Property(e => e.Notificationmessage)
+                .HasMaxLength(8000)
+                .HasColumnName("notificationmessage");
+            entity.Property(e => e.TimesheetId).HasColumnName("timesheet_id");
+        });
+
         modelBuilder.Entity<ClientDetail>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("client_details_pkey");
@@ -189,50 +220,6 @@ public partial class ShreeDbContext_Postgres : DbContext
                 .HasConstraintName("fk_employee_attendance_employee");
         });
 
-        modelBuilder.Entity<Employeeattendancetype>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("employeeattendancetype", "pg_temp_3");
-
-            entity.Property(e => e.Dataenteredby)
-                .HasMaxLength(100)
-                .HasColumnName("dataenteredby");
-            entity.Property(e => e.Dataenteredon)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("dataenteredon");
-            entity.Property(e => e.Employeeid)
-                .HasMaxLength(50)
-                .HasColumnName("employeeid");
-            entity.Property(e => e.Entryformonth)
-                .HasMaxLength(50)
-                .HasColumnName("entryformonth");
-            entity.Property(e => e.Isabsent).HasColumnName("isabsent");
-            entity.Property(e => e.Ishalfday).HasColumnName("ishalfday");
-            entity.Property(e => e.Islate).HasColumnName("islate");
-            entity.Property(e => e.Ispaidleave).HasColumnName("ispaidleave");
-            entity.Property(e => e.Ispresent).HasColumnName("ispresent");
-            entity.Property(e => e.Lastabsentdate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("lastabsentdate");
-            entity.Property(e => e.Lasthalfdaydate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("lasthalfdaydate");
-            entity.Property(e => e.Lastlateday)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("lastlateday");
-            entity.Property(e => e.Lastpaidleavedate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("lastpaidleavedate");
-            entity.Property(e => e.Lastpresentdate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("lastpresentdate");
-            entity.Property(e => e.Totaldaysabsent).HasColumnName("totaldaysabsent");
-            entity.Property(e => e.Totaldayshalfdays).HasColumnName("totaldayshalfdays");
-            entity.Property(e => e.Totaldayslateday).HasColumnName("totaldayslateday");
-            entity.Property(e => e.Totaldayspresent).HasColumnName("totaldayspresent");
-        });
-
         modelBuilder.Entity<Employeeloandetail>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("employeeloandetails_pkey");
@@ -354,6 +341,59 @@ public partial class ShreeDbContext_Postgres : DbContext
                 .HasForeignKey(d => d.Employeeid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_overtime_working_employee");
+        });
+
+        modelBuilder.Entity<TimesheetdetailsAdmin>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("timesheetdetails_admin_pkey");
+
+            entity.ToTable("timesheetdetails_admin");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Dataenteredby)
+                .HasMaxLength(100)
+                .HasColumnName("dataenteredby");
+            entity.Property(e => e.Dataenteredon)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("dataenteredon");
+            entity.Property(e => e.Employeeid)
+                .HasMaxLength(50)
+                .HasColumnName("employeeid");
+            entity.Property(e => e.Timesheetdetailid).HasColumnName("timesheetdetailid");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.TimesheetdetailsAdmins)
+                .HasPrincipalKey(p => p.Employeeid)
+                .HasForeignKey(d => d.Employeeid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_employeeid");
+
+            entity.HasOne(d => d.Timesheetdetail).WithMany(p => p.TimesheetdetailsAdmins)
+                .HasForeignKey(d => d.Timesheetdetailid)
+                .HasConstraintName("fk_timesheetdetailid");
+        });
+
+        modelBuilder.Entity<TimesheetdetailsEmployee>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("timesheetdetails_employees_pkey");
+
+            entity.ToTable("timesheetdetails_employees");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Dataenteredby)
+                .HasMaxLength(50)
+                .HasColumnName("dataenteredby");
+            entity.Property(e => e.Dataenteredon)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("dataenteredon");
+            entity.Property(e => e.Employeeid)
+                .HasMaxLength(50)
+                .HasColumnName("employeeid");
+            entity.Property(e => e.Timesheetdetails).HasColumnName("timesheetdetails");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.TimesheetdetailsEmployees)
+                .HasPrincipalKey(p => p.Employeeid)
+                .HasForeignKey(d => d.Employeeid)
+                .HasConstraintName("fk_employeeid");
         });
 
         modelBuilder.Entity<Userdetailstable>(entity =>

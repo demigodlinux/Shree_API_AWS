@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shree_API_AWS.Attributes;
 using Shree_API_AWS.Context;
+using Shree_API_AWS.DataTransferObjects;
 using Shree_API_AWS.Models;
 
 namespace Shree_API_AWS.Controllers
@@ -14,23 +16,26 @@ namespace Shree_API_AWS.Controllers
     {
         private readonly ShreeDbContext_Postgres _context;
 
-        public ClientDetailsController(ShreeDbContext_Postgres context)
+        private IMapper _mapper { get; set; }
+
+        public ClientDetailsController(ShreeDbContext_Postgres context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/ClientDetails
         [HttpGet]
         [Authorize(Roles = "user,admin")]
         [EncryptResponse]
-        public async Task<ActionResult<IEnumerable<ClientDetail>>> GetClientDetails()
+        public async Task<ActionResult<IEnumerable<ClientDetails_DTO>>> GetClientDetails()
         {
-            return Ok(await _context.ClientDetails.ToListAsync());
+            return Ok(_mapper.Map<IEnumerable<ClientDetails_DTO>>(await _context.ClientDetails.ToListAsync()));
         }
 
         // GET: api/ClientDetails/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ClientDetail>> GetClientDetail(int id)
+        public async Task<ActionResult<ClientDetails_DTO>> GetClientDetail(int id)
         {
             var clientDetail = await _context.ClientDetails.FindAsync(id);
 
@@ -39,7 +44,7 @@ namespace Shree_API_AWS.Controllers
                 return NotFound();
             }
 
-            return clientDetail;
+            return _mapper.Map<ClientDetails_DTO>(clientDetail);
         }
 
         // PUT: api/ClientDetails/5

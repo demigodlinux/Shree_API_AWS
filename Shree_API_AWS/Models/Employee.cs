@@ -45,5 +45,9 @@ public partial class Employee
 
     public virtual ICollection<Overtimeworking> Overtimeworkings { get; set; } = new List<Overtimeworking>();
 
+    public virtual ICollection<TimesheetdetailsAdmin> TimesheetdetailsAdmins { get; set; } = new List<TimesheetdetailsAdmin>();
+
+    public virtual ICollection<TimesheetdetailsEmployee> TimesheetdetailsEmployees { get; set; } = new List<TimesheetdetailsEmployee>();
+
     public virtual ICollection<Userdetailstable> Userdetailstables { get; set; } = new List<Userdetailstable>();
 }
