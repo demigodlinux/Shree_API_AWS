@@ -68,16 +68,15 @@ builder.Services.AddControllers()
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        builder =>
-        {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
-        });
+    options.AddPolicy("AllowNgrokOrigin",
+        builder => builder.WithOrigins("http://localhost:4200", "https://immense-fancy-calf.ngrok-free.app") // Allow your Angular app's origin
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
 });
 
 var app = builder.Build();
+
+app.UseCors("AllowNgrokOrigin");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -87,8 +86,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseCors("AllowAll");
 
 // Apply Authentication and Authorization in correct order
 app.UseAuthentication();
