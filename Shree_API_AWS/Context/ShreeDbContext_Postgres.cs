@@ -18,6 +18,8 @@ public partial class ShreeDbContext_Postgres : DbContext
 
     public virtual DbSet<AlertNotification> AlertNotifications { get; set; }
 
+    public virtual DbSet<Blobtable> Blobtables { get; set; }
+
     public virtual DbSet<ClientDetail> ClientDetails { get; set; }
 
     public virtual DbSet<Employee> Employees { get; set; }
@@ -67,6 +69,41 @@ public partial class ShreeDbContext_Postgres : DbContext
                 .HasMaxLength(8000)
                 .HasColumnName("notificationmessage");
             entity.Property(e => e.TimesheetId).HasColumnName("timesheet_id");
+        });
+
+        modelBuilder.Entity<Blobtable>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("blobtable_pkey");
+
+            entity.ToTable("blobtable");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Dateenteredby)
+                .HasMaxLength(100)
+                .HasColumnName("dateenteredby");
+            entity.Property(e => e.Dateenteredon)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("dateenteredon");
+            entity.Property(e => e.Employeeid)
+                .HasMaxLength(50)
+                .HasColumnName("employeeid");
+            entity.Property(e => e.Filename)
+                .HasMaxLength(255)
+                .HasColumnName("filename");
+            entity.Property(e => e.Filepath).HasColumnName("filepath");
+            entity.Property(e => e.Servicetype)
+                .HasMaxLength(100)
+                .HasColumnName("servicetype");
+            entity.Property(e => e.Sitelocation)
+                .HasMaxLength(500)
+                .HasColumnName("sitelocation");
+            entity.Property(e => e.Sitename)
+                .HasMaxLength(500)
+                .HasColumnName("sitename");
+            entity.Property(e => e.Typeofupload)
+                .HasMaxLength(100)
+                .HasColumnName("typeofupload");
         });
 
         modelBuilder.Entity<ClientDetail>(entity =>

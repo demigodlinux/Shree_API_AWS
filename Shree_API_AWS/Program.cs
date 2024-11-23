@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Shree_API_AWS.Context;
 using Shree_API_AWS.Repository;
+using Shree_API_AWS.Repository.Interface;
+using Shree_API_AWS.Repository.Service;
 using Shree_API_AWS.Services;
 using System.Text;
 
@@ -44,6 +46,7 @@ builder.Services.AddDbContext<ShreeDbContext_Postgres>(options =>
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<IToken, TokenService>();
 builder.Services.AddScoped<IUser, UserService>();
+builder.Services.AddScoped<IFileUploader, FileUploaderService>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
