@@ -22,7 +22,7 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult> UploadFile([FromBody]FetchBlobModel blob, IFormFile file)
+        public async Task<IActionResult> UploadFile([FromForm] FetchBlobModel blob, [FromForm] IFormFile file)
         {
             var employeeData = _context.Employees.Where(x => x.Employeeid == blob.EmployeeId).FirstOrDefault();
 

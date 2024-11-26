@@ -28,6 +28,8 @@ public partial class ShreeDbContext_Postgres : DbContext
 
     public virtual DbSet<Employeeloandetail> Employeeloandetails { get; set; }
 
+    public virtual DbSet<Locationtracker> Locationtrackers { get; set; }
+
     public virtual DbSet<LogEmployeeattendance> LogEmployeeattendances { get; set; }
 
     public virtual DbSet<Overtimeworking> Overtimeworkings { get; set; }
@@ -300,6 +302,26 @@ public partial class ShreeDbContext_Postgres : DbContext
                 .HasForeignKey(d => d.Employeeid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_employee_loan_details_employee");
+        });
+
+        modelBuilder.Entity<Locationtracker>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("locationtracker_pkey");
+
+            entity.ToTable("locationtracker");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Dateenteredby)
+                .HasMaxLength(100)
+                .HasColumnName("dateenteredby");
+            entity.Property(e => e.Dateenteredon)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("dateenteredon");
+            entity.Property(e => e.Employeeid)
+                .HasMaxLength(50)
+                .HasColumnName("employeeid");
+            entity.Property(e => e.Isactive).HasColumnName("isactive");
+            entity.Property(e => e.Locationlog).HasColumnName("locationlog");
         });
 
         modelBuilder.Entity<LogEmployeeattendance>(entity =>
