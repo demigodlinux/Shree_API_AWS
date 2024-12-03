@@ -18,6 +18,10 @@ namespace LearningAPI.Mapper
             CreateMap<TimesheetdetailsEmployee, TimesheetEmployee_DTO>().ReverseMap();
             CreateMap<AlertNotification, AlertNotification_DTO>().ReverseMap();
             CreateMap<Locationtracker, LocationTracker_DTO>().ReverseMap();
+            CreateMap<Inventorylist, InventoryList_DTO>().ReverseMap();
+            CreateMap<Loginventorydatum, LogInventory_DTO>().ReverseMap();
+            CreateMap<Vendorlist, VendorList_DTO>().ReverseMap();
+
         }
     }
 }

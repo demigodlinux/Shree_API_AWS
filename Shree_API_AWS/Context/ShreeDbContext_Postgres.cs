@@ -28,9 +28,13 @@ public partial class ShreeDbContext_Postgres : DbContext
 
     public virtual DbSet<Employeeloandetail> Employeeloandetails { get; set; }
 
+    public virtual DbSet<Inventorylist> Inventorylists { get; set; }
+
     public virtual DbSet<Locationtracker> Locationtrackers { get; set; }
 
     public virtual DbSet<LogEmployeeattendance> LogEmployeeattendances { get; set; }
+
+    public virtual DbSet<Loginventorydatum> Loginventorydata { get; set; }
 
     public virtual DbSet<Overtimeworking> Overtimeworkings { get; set; }
 
@@ -39,6 +43,8 @@ public partial class ShreeDbContext_Postgres : DbContext
     public virtual DbSet<TimesheetdetailsEmployee> TimesheetdetailsEmployees { get; set; }
 
     public virtual DbSet<Userdetailstable> Userdetailstables { get; set; }
+
+    public virtual DbSet<Vendorlist> Vendorlists { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -113,6 +119,8 @@ public partial class ShreeDbContext_Postgres : DbContext
             entity.HasKey(e => e.Id).HasName("client_details_pkey");
 
             entity.ToTable("client_details");
+
+            entity.HasIndex(e => e.Clientid, "uq_clientdetails_clientid").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Clientaddress)
@@ -218,9 +226,7 @@ public partial class ShreeDbContext_Postgres : DbContext
             entity.Property(e => e.Dataenteredby)
                 .HasMaxLength(100)
                 .HasColumnName("dataenteredby");
-            entity.Property(e => e.Dataenteredon)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("dataenteredon");
+            entity.Property(e => e.Dataenteredon).HasColumnName("dataenteredon");
             entity.Property(e => e.Employeeid)
                 .HasMaxLength(50)
                 .HasColumnName("employeeid");
@@ -232,21 +238,11 @@ public partial class ShreeDbContext_Postgres : DbContext
             entity.Property(e => e.Islate).HasColumnName("islate");
             entity.Property(e => e.Ispaidleave).HasColumnName("ispaidleave");
             entity.Property(e => e.Ispresent).HasColumnName("ispresent");
-            entity.Property(e => e.Lastabsentdate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("lastabsentdate");
-            entity.Property(e => e.Lasthalfdaydate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("lasthalfdaydate");
-            entity.Property(e => e.Lastlateday)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("lastlateday");
-            entity.Property(e => e.Lastpaidleavedate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("lastpaidleavedate");
-            entity.Property(e => e.Lastpresentdate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("lastpresentdate");
+            entity.Property(e => e.Lastabsentdate).HasColumnName("lastabsentdate");
+            entity.Property(e => e.Lasthalfdaydate).HasColumnName("lasthalfdaydate");
+            entity.Property(e => e.Lastlateday).HasColumnName("lastlateday");
+            entity.Property(e => e.Lastpaidleavedate).HasColumnName("lastpaidleavedate");
+            entity.Property(e => e.Lastpresentdate).HasColumnName("lastpresentdate");
             entity.Property(e => e.Totaldaysabsent).HasColumnName("totaldaysabsent");
             entity.Property(e => e.Totaldayshalfdays).HasColumnName("totaldayshalfdays");
             entity.Property(e => e.Totaldayslateday).HasColumnName("totaldayslateday");
@@ -304,6 +300,48 @@ public partial class ShreeDbContext_Postgres : DbContext
                 .HasConstraintName("fk_employee_loan_details_employee");
         });
 
+        modelBuilder.Entity<Inventorylist>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("inventorylist_pkey");
+
+            entity.ToTable("inventorylist");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Dateenteredby)
+                .HasMaxLength(100)
+                .HasColumnName("dateenteredby");
+            entity.Property(e => e.Dateenteredon)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("dateenteredon");
+            entity.Property(e => e.Materialdescription).HasColumnName("materialdescription");
+            entity.Property(e => e.Materialid)
+                .HasMaxLength(50)
+                .HasColumnName("materialid");
+            entity.Property(e => e.Materialname).HasColumnName("materialname");
+            entity.Property(e => e.Materialpriceperunit)
+                .HasPrecision(10, 2)
+                .HasColumnName("materialpriceperunit");
+            entity.Property(e => e.Measuringunit)
+                .HasMaxLength(50)
+                .HasColumnName("measuringunit");
+            entity.Property(e => e.Quantity)
+                .HasPrecision(10, 2)
+                .HasColumnName("quantity");
+            entity.Property(e => e.Typeofmaterial)
+                .HasMaxLength(50)
+                .HasColumnName("typeofmaterial");
+            entity.Property(e => e.Vendorid)
+                .HasMaxLength(50)
+                .HasColumnName("vendorid");
+
+            entity.HasOne(d => d.Vendor).WithMany(p => p.Inventorylists)
+                .HasPrincipalKey(p => p.Vendorid)
+                .HasForeignKey(d => d.Vendorid)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fk_inventorylist_vendor");
+        });
+
         modelBuilder.Entity<Locationtracker>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("locationtracker_pkey");
@@ -331,15 +369,17 @@ public partial class ShreeDbContext_Postgres : DbContext
             entity.ToTable("log_employeeattendance");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Attendancedate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("attendancedate");
+            entity.Property(e => e.Attendancedate).HasColumnName("attendancedate");
+            entity.Property(e => e.Checkintiming)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("checkintiming");
+            entity.Property(e => e.Checkouttiming)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("checkouttiming");
             entity.Property(e => e.Dataenteredby)
                 .HasMaxLength(100)
                 .HasColumnName("dataenteredby");
-            entity.Property(e => e.Dataenteredon)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("dataenteredon");
+            entity.Property(e => e.Dataenteredon).HasColumnName("dataenteredon");
             entity.Property(e => e.Employeeattendid).HasColumnName("employeeattendid");
             entity.Property(e => e.Employeeid)
                 .HasMaxLength(50)
@@ -363,6 +403,67 @@ public partial class ShreeDbContext_Postgres : DbContext
                 .HasForeignKey(d => d.Employeeid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_log_employee_attendance_employee");
+        });
+
+        modelBuilder.Entity<Loginventorydatum>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("loginventorydata_pkey");
+
+            entity.ToTable("loginventorydata");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Clientid)
+                .HasMaxLength(100)
+                .HasColumnName("clientid");
+            entity.Property(e => e.Currentmaterialpriceperunit)
+                .HasPrecision(10, 2)
+                .HasColumnName("currentmaterialpriceperunit");
+            entity.Property(e => e.Dateenteredby)
+                .HasMaxLength(100)
+                .HasColumnName("dateenteredby");
+            entity.Property(e => e.Dateenteredon)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("dateenteredon");
+            entity.Property(e => e.Dateoftransaction)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("dateoftransaction");
+            entity.Property(e => e.Materialdescription).HasColumnName("materialdescription");
+            entity.Property(e => e.Materialid)
+                .HasMaxLength(50)
+                .HasColumnName("materialid");
+            entity.Property(e => e.Materialname).HasColumnName("materialname");
+            entity.Property(e => e.Measuringunit)
+                .HasMaxLength(50)
+                .HasColumnName("measuringunit");
+            entity.Property(e => e.Priceofunittransacted)
+                .HasPrecision(10, 2)
+                .HasColumnName("priceofunittransacted");
+            entity.Property(e => e.Quantity)
+                .HasPrecision(10, 2)
+                .HasColumnName("quantity");
+            entity.Property(e => e.Typeofmaterial)
+                .HasMaxLength(50)
+                .HasColumnName("typeofmaterial");
+            entity.Property(e => e.Typeoftransaction)
+                .HasMaxLength(100)
+                .HasColumnName("typeoftransaction");
+            entity.Property(e => e.Vendorid)
+                .HasMaxLength(50)
+                .HasColumnName("vendorid");
+
+            entity.HasOne(d => d.Client).WithMany(p => p.Loginventorydata)
+                .HasPrincipalKey(p => p.Clientid)
+                .HasForeignKey(d => d.Clientid)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fk_loginventorydata_client");
+
+            entity.HasOne(d => d.Vendor).WithMany(p => p.Loginventorydata)
+                .HasPrincipalKey(p => p.Vendorid)
+                .HasForeignKey(d => d.Vendorid)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fk_loginventorydata_vendor");
         });
 
         modelBuilder.Entity<Overtimeworking>(entity =>
@@ -488,6 +589,41 @@ public partial class ShreeDbContext_Postgres : DbContext
                 .HasForeignKey(d => d.Employeeid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_user_details_table_employee");
+        });
+
+        modelBuilder.Entity<Vendorlist>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("vendorlist_pkey");
+
+            entity.ToTable("vendorlist");
+
+            entity.HasIndex(e => e.Vendorid, "vendorlist_vendorid_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Dataenteredby)
+                .HasMaxLength(100)
+                .HasColumnName("dataenteredby");
+            entity.Property(e => e.Dataenteredon)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("dataenteredon");
+            entity.Property(e => e.Gstnumber)
+                .HasMaxLength(100)
+                .HasColumnName("gstnumber");
+            entity.Property(e => e.Ownername)
+                .HasMaxLength(200)
+                .HasColumnName("ownername");
+            entity.Property(e => e.Ownernumber).HasColumnName("ownernumber");
+            entity.Property(e => e.Vendorid)
+                .HasMaxLength(50)
+                .HasColumnName("vendorid");
+            entity.Property(e => e.Vendorlocation).HasColumnName("vendorlocation");
+            entity.Property(e => e.Vendorname)
+                .HasMaxLength(500)
+                .HasColumnName("vendorname");
+            entity.Property(e => e.Vendortype)
+                .HasMaxLength(200)
+                .HasColumnName("vendortype");
         });
 
         OnModelCreatingPartial(modelBuilder);

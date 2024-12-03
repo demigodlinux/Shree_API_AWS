@@ -13,7 +13,7 @@ public partial class LogEmployeeattendance
 
     public string? Entryformonth { get; set; }
 
-    public DateTime? Dataenteredon { get; set; }
+    public DateTime Dataenteredon { get; set; }
 
     public string? Dataenteredby { get; set; }
 
@@ -30,6 +30,10 @@ public partial class LogEmployeeattendance
     public bool? Ishalfday { get; set; }
 
     public bool? Isonduty { get; set; }
+
+    public DateTime? Checkintiming { get; set; }
+
+    public DateTime? Checkouttiming { get; set; }
 
     public virtual Employee Employee { get; set; } = null!;
 

@@ -40,4 +40,6 @@ public partial class ClientDetail
     public bool? Isgstincluded { get; set; }
 
     public bool? Isactive { get; set; }
+
+    public virtual ICollection<Loginventorydatum> Loginventorydata { get; set; } = new List<Loginventorydatum>();
 }

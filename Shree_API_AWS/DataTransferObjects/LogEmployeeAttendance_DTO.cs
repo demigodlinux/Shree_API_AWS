@@ -27,5 +27,8 @@
         public bool? IsHalfDay { get; set; }
 
         public bool? IsOnDuty { get; set; }
+        public DateTime? CheckInTiming { get; set; }
+
+        public DateTime? CheckOutTiming { get; set; }
     }
 }

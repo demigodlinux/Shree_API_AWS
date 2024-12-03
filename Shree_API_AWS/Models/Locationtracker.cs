@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shree_API_AWS.Models;
 
@@ -10,7 +9,6 @@ public partial class Locationtracker
 
     public string Employeeid { get; set; } = null!;
 
-    [Column(TypeName = "timestamp with time zone")]
     public DateTime Dateenteredon { get; set; }
 
     public string? Dateenteredby { get; set; }
