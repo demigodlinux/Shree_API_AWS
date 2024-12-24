@@ -7,13 +7,12 @@ namespace Shree_API_AWS.Context;
 
 public partial class ShreeDbContext_Postgres : DbContext
 {
-    public ShreeDbContext_Postgres()
-    {
-    }
+    private readonly string _connectionString;
 
-    public ShreeDbContext_Postgres(DbContextOptions<ShreeDbContext_Postgres> options)
+    public ShreeDbContext_Postgres(DbContextOptions<ShreeDbContext_Postgres> options, IConfiguration configuration)
         : base(options)
     {
+        _connectionString = configuration.GetConnectionString("PostgresConnection");
     }
 
     public virtual DbSet<AlertNotification> AlertNotifications { get; set; }
@@ -48,7 +47,7 @@ public partial class ShreeDbContext_Postgres : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=192.168.1.111;Database=master;Username=postgres;Password=Aadinandika");
+        => optionsBuilder.UseNpgsql(_connectionString);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -354,6 +353,7 @@ public partial class ShreeDbContext_Postgres : DbContext
                 .HasColumnName("dateenteredby");
             entity.Property(e => e.Dateenteredon)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
                 .HasColumnName("dateenteredon");
             entity.Property(e => e.Employeeid)
                 .HasMaxLength(50)
@@ -610,6 +610,7 @@ public partial class ShreeDbContext_Postgres : DbContext
             entity.Property(e => e.Gstnumber)
                 .HasMaxLength(100)
                 .HasColumnName("gstnumber");
+            entity.Property(e => e.Isactive).HasColumnName("isactive");
             entity.Property(e => e.Ownername)
                 .HasMaxLength(200)
                 .HasColumnName("ownername");

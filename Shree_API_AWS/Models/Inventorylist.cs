@@ -23,7 +23,7 @@ public partial class Inventorylist
 
     public decimal? Materialpriceperunit { get; set; }
 
-    public DateTime Dateenteredon { get; set; }
+    public DateTime? Dateenteredon { get; set; }
 
     public string? Dateenteredby { get; set; }
 

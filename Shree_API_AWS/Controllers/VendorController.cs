@@ -25,7 +25,7 @@ namespace Shree_API_AWS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetVendorDetails()
         {
-            var vendorDetails = await _context.Vendorlists.ToListAsync();
+            var vendorDetails = await _context.Vendorlists.OrderBy(x => x.Vendorid).ToListAsync();
             return Ok(_mapper.Map<IEnumerable<VendorList_DTO>>(vendorDetails));
             
         }
@@ -33,57 +33,54 @@ namespace Shree_API_AWS.Controllers
         [HttpPost]
         public async Task<IActionResult> PostVendorDetails(VendorList_DTO vendorData)
         {
-            var existingVendorDetail = await _context.Vendorlists.Where(x => x.Vendorid == vendorData.Vendorid).FirstOrDefaultAsync();
-
             try
             {
+                var existingVendorDetail = await _context.Vendorlists
+                    .FirstOrDefaultAsync(x => x.Vendorid == vendorData.Vendorid);
+
                 if (existingVendorDetail != null)
                 {
-                    var vendorDatum = new Vendorlist
-                    {
-                        Id = existingVendorDetail.Id,
-                        Vendorid = existingVendorDetail.Vendorid,
-                        Vendorname = existingVendorDetail.Vendorname,
-                        Vendorlocation = existingVendorDetail.Vendorlocation,
-                        Vendortype = vendorData.Vendortype,
-                        Dataenteredby = "Admin",
-                        Dataenteredon = DateTime.UtcNow.ToLocalTime(),
-                        Gstnumber = vendorData.Gstnumber,
-                        Ownername = vendorData.Ownername,
-                        Ownernumber = vendorData.Ownernumber,
-                    };
+                    // Update existing vendor details
+                    existingVendorDetail.Vendortype = vendorData.Vendortype;
+                    existingVendorDetail.Gstnumber = vendorData.Gstnumber;
+                    existingVendorDetail.Ownername = vendorData.Ownername;
+                    existingVendorDetail.Ownernumber = vendorData.Ownernumber;
+                    existingVendorDetail.Isactive = vendorData.IsActive;
+                    existingVendorDetail.Dataenteredby = "Admin";
+                    existingVendorDetail.Dataenteredon = DateTime.UtcNow.ToLocalTime();
 
-                    _context.Entry(vendorDatum).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
+                    _context.Entry(existingVendorDetail).State = EntityState.Modified;
                 }
                 else
                 {
+                    // Add new vendor details
+                    var newVendorId = vendorData.Vendorid ?? Guid.NewGuid().ToString(); // Generate ID if null
                     var vendorDatum = new Vendorlist
                     {
-                        Vendorid = vendorData.Vendorid,
+                        Vendorid = newVendorId,
                         Vendorname = vendorData.Vendorname,
                         Vendorlocation = vendorData.Vendorlocation,
                         Vendortype = vendorData.Vendortype,
-                        Dataenteredby = "Admin",
-                        Dataenteredon = DateTime.UtcNow.ToLocalTime(),
                         Gstnumber = vendorData.Gstnumber,
                         Ownername = vendorData.Ownername,
                         Ownernumber = vendorData.Ownernumber,
+                        Isactive = vendorData.IsActive,
+                        Dataenteredby = "Admin",
+                        Dataenteredon = DateTime.UtcNow.ToLocalTime()
                     };
 
                     _context.Vendorlists.Add(vendorDatum);
-                    await _context.SaveChangesAsync();
-
                 }
 
+                await _context.SaveChangesAsync();
                 return Ok("Success");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex);
             }
-            
         }
+
 
     }
 }

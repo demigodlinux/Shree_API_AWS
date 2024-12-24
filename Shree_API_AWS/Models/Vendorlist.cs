@@ -21,9 +21,11 @@ public partial class Vendorlist
 
     public long? Ownernumber { get; set; }
 
-    public DateTime Dataenteredon { get; set; }
+    public DateTime? Dataenteredon { get; set; }
 
     public string? Dataenteredby { get; set; }
+
+    public bool? Isactive { get; set; }
 
     public virtual ICollection<Inventorylist> Inventorylists { get; set; } = new List<Inventorylist>();
 

@@ -18,6 +18,8 @@
 
         public long? Ownernumber { get; set; }
 
+        public bool IsActive { get; set; }
+
         public DateTime? Dataenteredon { get; set; }
 
         public string? Dataenteredby { get; set; }

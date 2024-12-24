@@ -24,7 +24,7 @@ namespace Shree_API_AWS.Controllers
         [HttpGet("Inventory")]
         public async Task<ActionResult<IEnumerable<InventoryList_DTO>>> GetInventoryList()
         {
-            var inventory = await _context.Inventorylists.ToListAsync();
+            var inventory = await _context.Inventorylists.OrderBy(x => x.Materialid).ToListAsync();
 
             var vendorDetails = await _context.Vendorlists.ToListAsync();
 
@@ -40,7 +40,7 @@ namespace Shree_API_AWS.Controllers
         [HttpGet("LogInventory")]
         public async Task<ActionResult<IEnumerable<LogInventory_DTO>>> GetLogInventoryList()
         {
-            var logInventory = await _context.Loginventorydata.ToListAsync();
+            var logInventory = await _context.Loginventorydata.OrderBy(x => x.Materialid).ToListAsync();
 
             return Ok(_mapper.Map<IEnumerable<LogInventory_DTO>>(logInventory));
         }

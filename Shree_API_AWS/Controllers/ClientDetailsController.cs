@@ -30,7 +30,7 @@ namespace Shree_API_AWS.Controllers
         [EncryptResponse]
         public async Task<ActionResult<IEnumerable<ClientDetails_DTO>>> GetClientDetails()
         {
-            return Ok(_mapper.Map<IEnumerable<ClientDetails_DTO>>(await _context.ClientDetails.ToListAsync()));
+            return Ok(_mapper.Map<IEnumerable<ClientDetails_DTO>>(await _context.ClientDetails.OrderBy(x => x.Clientid).ToListAsync()));
         }
 
         // GET: api/ClientDetails/5
@@ -49,45 +49,102 @@ namespace Shree_API_AWS.Controllers
 
         // PUT: api/ClientDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutClientDetail(int id, ClientDetail clientDetail)
+        [HttpPut]
+        public async Task<IActionResult> PutClientDetail(ClientDetails_DTO clientDetail)
         {
-            if (id != clientDetail.Id)
-            {
-                return BadRequest();
-            }
+            // Retrieve the existing entity from the database
+            var existingData = await _context.ClientDetails
+                .Where(x => x.Id == clientDetail.Id)
+                .FirstOrDefaultAsync();
 
-            _context.Entry(clientDetail).State = EntityState.Modified;
+            if (existingData != null)
+            {
+                // Map DTO properties to the existing entity
+                existingData.Clientid = clientDetail.ClientId;
+                existingData.Dataenteredon = DateTime.Now;
+                existingData.Dataenteredby = "Admin";
+                existingData.Clientname = clientDetail.ClientName;
+                existingData.Clientaddress = clientDetail.ClientAddress;
+                existingData.Clientlocation = clientDetail.ClientLocation;
+                existingData.Clientservicetype = clientDetail.ClientServiceType;
+                existingData.Sitemanagername = clientDetail.SiteManagerName;
+                existingData.Sitemanagercontact = clientDetail.SiteManagerContact;
+                existingData.Numberoflifts = clientDetail.NumberOfLifts;
+                existingData.Contractstartdate = clientDetail.ContractStartDate;
+                existingData.Contractenddate = clientDetail.ContractEndDate;
+                existingData.Contractperiod = clientDetail.ContractPeriod;
+                existingData.Contractamount = clientDetail.ContractAmount;
+                existingData.Termsofpayment = clientDetail.TermsOfPayment;
+                existingData.Isgstincluded = clientDetail.IsGstIncluded;
+                existingData.Isactive = clientDetail.IsActive;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ClientDetailExists(id))
+                try
                 {
-                    return NotFound();
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!ClientDetailExists(clientDetail.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
-            }
 
-            return NoContent();
+                return Ok("Success");
+            }
+            else
+            {
+                return NotFound("No records found");
+            }
         }
+
+
 
         // POST: api/ClientDetails
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ClientDetail>> PostClientDetail(ClientDetail clientDetail)
+        public async Task<IActionResult> PostClientDetail(ClientDetails_DTO clientDetail)
         {
-            _context.ClientDetails.Add(clientDetail);
-            await _context.SaveChangesAsync();
+            try
+            {
+                // Map DTO to Entity
+                var newClient = new ClientDetail
+                {
+                    Clientid = clientDetail.ClientId,
+                    Dataenteredon = DateTime.Now,
+                    Dataenteredby = "Admin",
+                    Clientname = clientDetail.ClientName,
+                    Clientaddress = clientDetail.ClientAddress,
+                    Clientlocation = clientDetail.ClientLocation,
+                    Clientservicetype = clientDetail.ClientServiceType,
+                    Sitemanagername = clientDetail.SiteManagerName,
+                    Sitemanagercontact = clientDetail.SiteManagerContact,
+                    Numberoflifts = clientDetail.NumberOfLifts,
+                    Contractstartdate = clientDetail.ContractStartDate,
+                    Contractenddate = clientDetail.ContractEndDate,
+                    Contractperiod = clientDetail.ContractPeriod,
+                    Contractamount = clientDetail.ContractAmount,
+                    Termsofpayment = clientDetail.TermsOfPayment,
+                    Isgstincluded = clientDetail.IsGstIncluded,
+                    Isactive = clientDetail.IsActive
+                };
 
-            return CreatedAtAction("GetClientDetail", new { id = clientDetail.Id }, clientDetail);
+                // Add the new client to the database
+                _context.ClientDetails.Add(newClient);
+                await _context.SaveChangesAsync();
+                return Ok("Success");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
+
 
         // DELETE: api/ClientDetails/5
         [HttpDelete("{id}")]

@@ -11,7 +11,7 @@ public partial class Loginventorydatum
 
     public string? Typeoftransaction { get; set; }
 
-    public DateTime Dateoftransaction { get; set; }
+    public DateTime? Dateoftransaction { get; set; }
 
     public string? Materialname { get; set; }
 
@@ -31,7 +31,7 @@ public partial class Loginventorydatum
 
     public decimal? Priceofunittransacted { get; set; }
 
-    public DateTime Dateenteredon { get; set; }
+    public DateTime? Dateenteredon { get; set; }
 
     public string? Dateenteredby { get; set; }
 
