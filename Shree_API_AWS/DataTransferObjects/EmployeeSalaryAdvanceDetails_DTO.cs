@@ -1,6 +1,6 @@
 ﻿namespace Shree_API_AWS.DataTransferObjects
 {
-    public class EmployeeLoanDetail_DTO
+    public class EmployeeSalaryAdvanceDetails_DTO
     {
         public int Id { get; set; }
 
@@ -10,13 +10,13 @@
 
         public string DataEnteredBy { get; set; } = null!;
 
-        public decimal LoanAmount { get; set; }
+        public decimal AdvanceAmount { get; set; }
 
-        public DateTime? LoanProcessedOn { get; set; }
+        public DateOnly? AmountProcessedOn { get; set; }
 
-        public DateTime? LastLoanCollectedDate { get; set; }
+        public string? Transactiontype { get; set; }
 
-        public int? PartsOfRepayment { get; set; }
+        public bool? IsAdvanceDeducted { get; set; }
 
         public string? Remarks { get; set; }
 

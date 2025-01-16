@@ -7,12 +7,13 @@ namespace Shree_API_AWS.Context;
 
 public partial class ShreeDbContext_Postgres : DbContext
 {
-    private readonly string _connectionString;
+    public ShreeDbContext_Postgres()
+    {
+    }
 
-    public ShreeDbContext_Postgres(DbContextOptions<ShreeDbContext_Postgres> options, IConfiguration configuration)
+    public ShreeDbContext_Postgres(DbContextOptions<ShreeDbContext_Postgres> options)
         : base(options)
     {
-        _connectionString = configuration.GetConnectionString("PostgresConnection");
     }
 
     public virtual DbSet<AlertNotification> AlertNotifications { get; set; }
@@ -26,6 +27,14 @@ public partial class ShreeDbContext_Postgres : DbContext
     public virtual DbSet<Employeeattendance> Employeeattendances { get; set; }
 
     public virtual DbSet<Employeeloandetail> Employeeloandetails { get; set; }
+
+    public virtual DbSet<Employeeloandetailslog> Employeeloandetailslogs { get; set; }
+
+    public virtual DbSet<Employeemiscdetail> Employeemiscdetails { get; set; }
+
+    public virtual DbSet<Employeepettycashdetail> Employeepettycashdetails { get; set; }
+
+    public virtual DbSet<Employeesalaryadvancedetail> Employeesalaryadvancedetails { get; set; }
 
     public virtual DbSet<Inventorylist> Inventorylists { get; set; }
 
@@ -47,7 +56,7 @@ public partial class ShreeDbContext_Postgres : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql(_connectionString);
+        => optionsBuilder.UseNpgsql("Host=192.168.1.111;Database=master;Username=postgres;Password=Aadinandika");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -265,38 +274,180 @@ public partial class ShreeDbContext_Postgres : DbContext
                 .HasMaxLength(100)
                 .HasColumnName("dataenteredby");
             entity.Property(e => e.Dataenteredon)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("dataenteredon");
             entity.Property(e => e.Employeeid)
                 .HasMaxLength(50)
                 .HasColumnName("employeeid");
-            entity.Property(e => e.Entryformonth)
-                .HasMaxLength(50)
-                .HasColumnName("entryformonth");
-            entity.Property(e => e.Installmentamount)
-                .HasPrecision(10, 2)
-                .HasColumnName("installmentamount");
-            entity.Property(e => e.Installmentscompleted).HasColumnName("installmentscompleted");
-            entity.Property(e => e.Isloanrepayed).HasColumnName("isloanrepayed");
-            entity.Property(e => e.Lastloanamountpaid)
+            entity.Property(e => e.Isactive)
+                .HasDefaultValue(true)
+                .HasColumnName("isactive");
+            entity.Property(e => e.Lastloancollecteddate)
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("lastloanamountpaid");
+                .HasColumnName("lastloancollecteddate");
             entity.Property(e => e.Loanamount)
                 .HasPrecision(10, 2)
                 .HasColumnName("loanamount");
-            entity.Property(e => e.Loanissuedon)
+            entity.Property(e => e.Loanprocessedon)
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("loanissuedon");
-            entity.Property(e => e.Outstandingloanamount)
-                .HasPrecision(10, 2)
-                .HasColumnName("outstandingloanamount");
-            entity.Property(e => e.Totalinstallments).HasColumnName("totalinstallments");
+                .HasColumnName("loanprocessedon");
+            entity.Property(e => e.Partsofrepayment).HasColumnName("partsofrepayment");
+            entity.Property(e => e.Remarks).HasColumnName("remarks");
 
             entity.HasOne(d => d.Employee).WithMany(p => p.Employeeloandetails)
                 .HasPrincipalKey(p => p.Employeeid)
                 .HasForeignKey(d => d.Employeeid)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_employee_loan_details_employee");
+                .HasConstraintName("fk_employee");
+        });
+
+        modelBuilder.Entity<Employeeloandetailslog>(entity =>
+        {
+            entity.HasKey(e => e.Logid).HasName("employeeloandetailslog_pkey");
+
+            entity.ToTable("employeeloandetailslog");
+
+            entity.Property(e => e.Logid).HasColumnName("logid");
+            entity.Property(e => e.Dataenteredby)
+                .HasMaxLength(100)
+                .HasColumnName("dataenteredby");
+            entity.Property(e => e.Dataenteredon)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("dataenteredon");
+            entity.Property(e => e.Employeeid)
+                .HasMaxLength(50)
+                .HasColumnName("employeeid");
+            entity.Property(e => e.Employeeloanid).HasColumnName("employeeloanid");
+            entity.Property(e => e.Isloanamountdeducted).HasColumnName("isloanamountdeducted");
+            entity.Property(e => e.Loanamount)
+                .HasPrecision(10, 2)
+                .HasColumnName("loanamount");
+            entity.Property(e => e.Partofpaymentremaining).HasColumnName("partofpaymentremaining");
+            entity.Property(e => e.Transactiondate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("transactiondate");
+            entity.Property(e => e.Transactiontype)
+                .HasMaxLength(10)
+                .HasColumnName("transactiontype");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.Employeeloandetailslogs)
+                .HasPrincipalKey(p => p.Employeeid)
+                .HasForeignKey(d => d.Employeeid)
+                .HasConstraintName("fk_employee_log");
+
+            entity.HasOne(d => d.Employeeloan).WithMany(p => p.Employeeloandetailslogs)
+                .HasForeignKey(d => d.Employeeloanid)
+                .HasConstraintName("fk_employee_loan");
+        });
+
+        modelBuilder.Entity<Employeemiscdetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("employeemiscdetails_pkey");
+
+            entity.ToTable("employeemiscdetails");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Amountprocessedon).HasColumnName("amountprocessedon");
+            entity.Property(e => e.Dataenteredby)
+                .HasMaxLength(100)
+                .HasColumnName("dataenteredby");
+            entity.Property(e => e.Dataenteredon)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("dataenteredon");
+            entity.Property(e => e.Employeeid)
+                .HasMaxLength(50)
+                .HasColumnName("employeeid");
+            entity.Property(e => e.Isactive)
+                .HasDefaultValue(true)
+                .HasColumnName("isactive");
+            entity.Property(e => e.Iscashdeducted).HasColumnName("iscashdeducted");
+            entity.Property(e => e.Misccashamount)
+                .HasPrecision(10, 2)
+                .HasColumnName("misccashamount");
+            entity.Property(e => e.Remarks).HasColumnName("remarks");
+            entity.Property(e => e.Transactiontype)
+                .HasMaxLength(100)
+                .HasColumnName("transactiontype");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.Employeemiscdetails)
+                .HasPrincipalKey(p => p.Employeeid)
+                .HasForeignKey(d => d.Employeeid)
+                .HasConstraintName("fk_employee");
+        });
+
+        modelBuilder.Entity<Employeepettycashdetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("employeepettycashdetails_pkey");
+
+            entity.ToTable("employeepettycashdetails");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Amountprocessedon).HasColumnName("amountprocessedon");
+            entity.Property(e => e.Dataenteredby)
+                .HasMaxLength(100)
+                .HasColumnName("dataenteredby");
+            entity.Property(e => e.Dataenteredon)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("dataenteredon");
+            entity.Property(e => e.Employeeid)
+                .HasMaxLength(50)
+                .HasColumnName("employeeid");
+            entity.Property(e => e.Isactive)
+                .HasDefaultValue(true)
+                .HasColumnName("isactive");
+            entity.Property(e => e.Iscashdeducted).HasColumnName("iscashdeducted");
+            entity.Property(e => e.Pettycashamount)
+                .HasPrecision(10, 2)
+                .HasColumnName("pettycashamount");
+            entity.Property(e => e.Remarks).HasColumnName("remarks");
+            entity.Property(e => e.Transactiontype)
+                .HasMaxLength(100)
+                .HasColumnName("transactiontype");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.Employeepettycashdetails)
+                .HasPrincipalKey(p => p.Employeeid)
+                .HasForeignKey(d => d.Employeeid)
+                .HasConstraintName("fk_employee");
+        });
+
+        modelBuilder.Entity<Employeesalaryadvancedetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("employeesalaryadvancedetails_pkey");
+
+            entity.ToTable("employeesalaryadvancedetails");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Advanceamount)
+                .HasPrecision(10, 2)
+                .HasColumnName("advanceamount");
+            entity.Property(e => e.Amountprocessedon).HasColumnName("amountprocessedon");
+            entity.Property(e => e.Dataenteredby)
+                .HasMaxLength(100)
+                .HasColumnName("dataenteredby");
+            entity.Property(e => e.Dataenteredon)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("dataenteredon");
+            entity.Property(e => e.Employeeid)
+                .HasMaxLength(50)
+                .HasColumnName("employeeid");
+            entity.Property(e => e.Isactive)
+                .HasDefaultValue(true)
+                .HasColumnName("isactive");
+            entity.Property(e => e.Isadvancededucted).HasColumnName("isadvancededucted");
+            entity.Property(e => e.Remarks).HasColumnName("remarks");
+            entity.Property(e => e.Transactiontype)
+                .HasMaxLength(100)
+                .HasColumnName("transactiontype");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.Employeesalaryadvancedetails)
+                .HasPrincipalKey(p => p.Employeeid)
+                .HasForeignKey(d => d.Employeeid)
+                .HasConstraintName("fk_employee");
         });
 
         modelBuilder.Entity<Inventorylist>(entity =>

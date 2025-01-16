@@ -41,6 +41,14 @@ public partial class Employee
 
     public virtual ICollection<Employeeloandetail> Employeeloandetails { get; set; } = new List<Employeeloandetail>();
 
+    public virtual ICollection<Employeeloandetailslog> Employeeloandetailslogs { get; set; } = new List<Employeeloandetailslog>();
+
+    public virtual ICollection<Employeemiscdetail> Employeemiscdetails { get; set; } = new List<Employeemiscdetail>();
+
+    public virtual ICollection<Employeepettycashdetail> Employeepettycashdetails { get; set; } = new List<Employeepettycashdetail>();
+
+    public virtual ICollection<Employeesalaryadvancedetail> Employeesalaryadvancedetails { get; set; } = new List<Employeesalaryadvancedetail>();
+
     public virtual ICollection<LogEmployeeattendance> LogEmployeeattendances { get; set; } = new List<LogEmployeeattendance>();
 
     public virtual ICollection<Overtimeworking> Overtimeworkings { get; set; } = new List<Overtimeworking>();

@@ -21,7 +21,10 @@ namespace LearningAPI.Mapper
             CreateMap<Inventorylist, InventoryList_DTO>().ReverseMap();
             CreateMap<Loginventorydatum, LogInventory_DTO>().ReverseMap();
             CreateMap<Vendorlist, VendorList_DTO>().ReverseMap();
-
+            CreateMap<Employeeloandetailslog, EmployeeLoanDetails_Log_DTO>().ReverseMap();
+            CreateMap<Employeemiscdetail, EmployeeMiscDetails_DTO>().ReverseMap();
+            CreateMap<Employeepettycashdetail, EmployeePettyCashDetails_DTO>().ReverseMap();
+            CreateMap<Employeesalaryadvancedetail, EmployeeSalaryAdvanceDetails_DTO>().ReverseMap();
         }
     }
 }
