@@ -74,7 +74,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowNgrokOrigin",
         builder => builder.WithOrigins("http://localhost:4200", "https://immense-fancy-calf.ngrok-free.app") // Allow your Angular app's origin
                           .AllowAnyHeader()
-                          .AllowAnyMethod());
+                          .AllowAnyMethod()
+                          .AllowCredentials());
 });
 
 var app = builder.Build();

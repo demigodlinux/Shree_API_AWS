@@ -24,21 +24,24 @@ namespace Shree_API_AWS.Controllers
         public async Task<ActionResult<IEnumerable<EmployeeSalaryAdvanceDetails_DTO>>> GetEmployeeSalaryDetails()
         {
             return Ok(_mapper.Map<IEnumerable<EmployeeSalaryAdvanceDetails_DTO>>(await _context.Employeesalaryadvancedetails
-                .Where(x => x.Isadvancededucted == false && x.Isactive == true).ToListAsync()));
+                .Where(x => x.Isadvancededucted == false && x.Isactive == true && x.Amountprocessedon >= DateOnly.FromDateTime(DateTime.Now).AddDays(-30)
+                    && x.Amountprocessedon <= DateOnly.FromDateTime(DateTime.Now).AddDays(1)).ToListAsync()));
         }
 
         [HttpGet("MiscDetails")]
         public async Task<ActionResult<IEnumerable<EmployeeMiscDetails_DTO>>> GetEmployeeMiscDetails()
         {
             return Ok(_mapper.Map<IEnumerable<EmployeeMiscDetails_DTO>>(await _context.Employeemiscdetails
-                .Where(x => x.Iscashdeducted == false && x.Isactive == true).ToListAsync()));
+                .Where(x => x.Iscashdeducted == false && x.Isactive == true && x.Amountprocessedon >= DateOnly.FromDateTime(DateTime.Now).AddDays(-30)
+                    && x.Amountprocessedon <= DateOnly.FromDateTime(DateTime.Now).AddDays(1)).ToListAsync()));
         }
 
         [HttpGet("PettyCashDetails")]
         public async Task<ActionResult<IEnumerable<EmployeePettyCashDetails_DTO>>> GetEmployeePettyCashDetails()
         {
             return Ok(_mapper.Map<IEnumerable<EmployeePettyCashDetails_DTO>>(await _context.Employeepettycashdetails
-                .Where(x => x.Iscashdeducted == false && x.Isactive == true).ToListAsync()));
+                .Where(x => x.Iscashdeducted == false && x.Isactive == true && x.Amountprocessedon >= DateOnly.FromDateTime(DateTime.Now).AddDays(-30)
+                    && x.Amountprocessedon <= DateOnly.FromDateTime(DateTime.Now).AddDays(1)).ToListAsync()));
         }
 
         [HttpGet("HistoricSalaryAdvDetails")]
@@ -59,14 +62,14 @@ namespace Shree_API_AWS.Controllers
             return Ok(_mapper.Map<IEnumerable<EmployeePettyCashDetails_DTO>>(await _context.Employeepettycashdetails.ToListAsync()));
         }
 
-        [HttpPost]
-        public async Task<ActionResult<string>> PostEmployeeFinanceDetail([FromBody]string json, string service, string? paidCheck = "NOTPAID")
+        [HttpPost("{service}/{paidCheck}")]
+        public async Task<ActionResult<string>> PostEmployeeFinanceDetail(jsonString json, string service, string? paidCheck = "NOTPAID")
         {
             try
             {
                 if (service.Equals("SalaryAdvance"))
                 {
-                    EmployeeSalaryAdvanceDetails_DTO salaryAdvanceDetail = JsonConvert.DeserializeObject<EmployeeSalaryAdvanceDetails_DTO>(json);
+                    EmployeeSalaryAdvanceDetails_DTO salaryAdvanceDetail = JsonConvert.DeserializeObject<EmployeeSalaryAdvanceDetails_DTO>(json.jsonObject);
                     if (paidCheck == "PAID")
                     {
                         var existingSalaryAdvanceRecord = await _context.Employeesalaryadvancedetails.FindAsync(salaryAdvanceDetail?.Id);
@@ -74,7 +77,7 @@ namespace Shree_API_AWS.Controllers
                         existingSalaryAdvanceRecord.Isadvancededucted = true;
                         existingSalaryAdvanceRecord.Isactive = false;
                         existingSalaryAdvanceRecord.Remarks = $"Old Remarks: {existingSalaryAdvanceRecord.Remarks} - Paid on {DateTime.Now.ToString("f")}";
-                        _context.SaveChangesAsync();
+                        await _context.SaveChangesAsync();
 
                         var updatedRecord = new Employeesalaryadvancedetail();
                         updatedRecord.Employeeid = existingSalaryAdvanceRecord.Employeeid;
@@ -92,6 +95,8 @@ namespace Shree_API_AWS.Controllers
                     }
                     else
                     {
+                        salaryAdvanceDetail.DataEnteredOn = DateTime.UtcNow.ToLocalTime();
+                        salaryAdvanceDetail.DataEnteredBy = "Admin";
                         var newRecord = _mapper.Map<Employeesalaryadvancedetail>(salaryAdvanceDetail);
                         _context.Employeesalaryadvancedetails.Add(newRecord);
                         await _context.SaveChangesAsync();
@@ -100,7 +105,7 @@ namespace Shree_API_AWS.Controllers
                 }
                 else if (service.Equals("Misc"))
                 {
-                    EmployeeMiscDetails_DTO miscDetail = JsonConvert.DeserializeObject<EmployeeMiscDetails_DTO>(json);
+                    EmployeeMiscDetails_DTO miscDetail = JsonConvert.DeserializeObject<EmployeeMiscDetails_DTO>(json.jsonObject);
                     if (paidCheck == "PAID")
                     {
                         var existingMiscRecord = await _context.Employeemiscdetails.FindAsync(miscDetail?.Id);
@@ -125,6 +130,8 @@ namespace Shree_API_AWS.Controllers
                     }
                     else
                     {
+                        miscDetail.DataEnteredOn = DateTime.UtcNow.ToLocalTime();
+                        miscDetail.DataEnteredBy = "Admin";
                         var newRecord = _mapper.Map<Employeemiscdetail>(miscDetail);
                         _context.Employeemiscdetails.Add(newRecord);
                         await _context.SaveChangesAsync();
@@ -133,7 +140,7 @@ namespace Shree_API_AWS.Controllers
                 }
                 else if (service.Equals("PettyCash"))
                 {
-                    EmployeePettyCashDetails_DTO pettyCashDetail = JsonConvert.DeserializeObject<EmployeePettyCashDetails_DTO>(json);
+                    EmployeePettyCashDetails_DTO pettyCashDetail = JsonConvert.DeserializeObject<EmployeePettyCashDetails_DTO>(json.jsonObject);
                     if (paidCheck == "PAID")
                     {
                         var existingPettyCashRecord = await _context.Employeepettycashdetails.FindAsync(pettyCashDetail?.Id);
@@ -158,6 +165,8 @@ namespace Shree_API_AWS.Controllers
                     }
                     else
                     {
+                        pettyCashDetail.DataEnteredOn = DateTime.UtcNow.ToLocalTime();
+                        pettyCashDetail.DataEnteredBy = "Admin";
                         var newRecord = _mapper.Map<Employeepettycashdetail>(pettyCashDetail);
                         _context.Employeepettycashdetails.Add(newRecord);
                         await _context.SaveChangesAsync();
@@ -172,5 +181,10 @@ namespace Shree_API_AWS.Controllers
             }
         }
 
+    }
+
+    public class jsonString
+    {
+        public string jsonObject { get; set; }
     }
 }

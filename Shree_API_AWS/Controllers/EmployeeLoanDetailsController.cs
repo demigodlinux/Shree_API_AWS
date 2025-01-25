@@ -33,10 +33,10 @@ namespace Shree_API_AWS.Controllers
         }
 
         // GET: api/Employeeloandetails/5
-        [HttpGet("LoanDetailsLog")]
-        public async Task<ActionResult<EmployeeLoanDetails_Log_DTO>> GetEmployeeLoanDetail(string empId)
+        [HttpGet("LoanDetailsLog/{id}")]
+        public async Task<ActionResult<EmployeeLoanDetails_Log_DTO>> GetEmployeeLoanDetail(int id)
         {
-            return Ok(_mapper.Map<IEnumerable<EmployeeLoanDetails_Log_DTO>>(await _context.Employeeloandetailslogs.ToListAsync()));
+            return Ok(_mapper.Map<IEnumerable<EmployeeLoanDetails_Log_DTO>>(await _context.Employeeloandetailslogs.Where(x => x.Employeeloanid == id).ToListAsync()));
         }
 
 
@@ -48,41 +48,49 @@ namespace Shree_API_AWS.Controllers
             try
             {
                 Employeeloandetail loanDetails = EmployeeLoanDetailExists(employeeLoanDetail);
+                var logloanDetails = loanDetails == null ? null : LogEmployeeLoanDetailExists(loanDetails);
 
                 if (loanDetails == null)
                 {
-                    loanDetails = new Employeeloandetail();
+                    employeeLoanDetail.LoanProcessedOn = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
+                    employeeLoanDetail.DataEnteredOn = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
+                    var newloanDetails = _mapper.Map<Employeeloandetail>(employeeLoanDetail);
 
-                    loanDetails = _mapper.Map<Employeeloandetail>(employeeLoanDetail);
-
-                    _context.Employeeloandetails.Add(loanDetails);
+                    _context.Employeeloandetails.Add(newloanDetails);
                     await _context.SaveChangesAsync();
 
                     loanDetails = EmployeeLoanDetailExists(employeeLoanDetail);
                 }
                 else
                 {
-                    loanDetails.Lastloancollecteddate = DateTime.Now;
+                    loanDetails.Lastloancollecteddate = DateTime.UtcNow.ToLocalTime();
 
                     await _context.SaveChangesAsync();
                 }
 
-
+ 
                 var loggedLoanDetails = new Employeeloandetailslog()
                 {
-                    Isloanamountdeducted = true,
+                    Isloanamountdeducted = logloanDetails == null ? false : true,
                     Dataenteredby = "Admin",
-                    Dataenteredon = DateTime.Now,
+                    Dataenteredon = DateTime.UtcNow.ToLocalTime(),
                     Employeeid = employeeLoanDetail.EmployeeId,
                     Employeeloanid = loanDetails.Id,
                     Loanamount = employeeLoanDetail.LoanAmount,
-                    Partofpaymentremaining = LogEmployeeLoanDetailExists(loanDetails) ? employeeLoanDetail.PartsOfRepayment - 1 : employeeLoanDetail.PartsOfRepayment,
-                    Transactiondate = DateTime.Now,
-                    Transactiontype = LogEmployeeLoanDetailExists(loanDetails) ? "CREDIT" : "DEBIT",
+                    Partofpaymentremaining = logloanDetails == null ? employeeLoanDetail.PartsOfRepayment : logloanDetails.Partofpaymentremaining - 1,
+                    Transactiondate = DateTime.UtcNow.ToLocalTime(),
+                    Transactiontype = logloanDetails == null ? "DEBIT" : "CREDIT",
                 };
 
                 _context.Employeeloandetailslogs.Add(loggedLoanDetails);
                 await _context.SaveChangesAsync();
+
+                if(loggedLoanDetails.Partofpaymentremaining == 0)
+                {
+                    loanDetails.Isactive = false;
+
+                    await _context.SaveChangesAsync();
+                }
 
                 return Ok("Success");
             }
@@ -99,10 +107,9 @@ namespace Shree_API_AWS.Controllers
             && e.Loanprocessedon == employeeLoanDetail.LoanProcessedOn && e.Loanamount == employeeLoanDetail.LoanAmount).FirstOrDefault() ?? null;
         }
 
-        private bool LogEmployeeLoanDetailExists(Employeeloandetail employeeLoanDetail)
+        private Employeeloandetailslog? LogEmployeeLoanDetailExists(Employeeloandetail employeeLoanDetail)
         {
-            return _context.Employeeloandetailslogs.Any(e => e.Logid == employeeLoanDetail.Id && e.Employeeid == employeeLoanDetail.Employeeid
-            && e.Transactiondate == employeeLoanDetail.Loanprocessedon && e.Loanamount == employeeLoanDetail.Loanamount);
+            return _context.Employeeloandetailslogs.Where(e => e.Employeeloanid == employeeLoanDetail.Id && e.Employeeid == employeeLoanDetail.Employeeid && e.Loanamount == employeeLoanDetail.Loanamount).OrderBy(x => x.Dataenteredon).LastOrDefault() ?? null;
         }
 
     }
