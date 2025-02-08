@@ -32,6 +32,8 @@ namespace Shree_API_AWS.Controllers
 
         // GET: api/Timesheet
         [HttpGet("Employee")]
+        [Authorize(Roles = "user, guest, admin")]
+        [EncryptResponse]
         public async Task<ActionResult<IEnumerable<TimesheetEmployee_DTO>>> GetEmployeeTimesheets()
         {
             var timesheet = await _context.TimesheetdetailsEmployees.ToListAsync();
@@ -39,7 +41,7 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpGet("Admin")]
-        [Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "admin")]
         [EncryptResponse]
         public async Task<ActionResult<IEnumerable<TimesheetAdmin_DTO>>> GetAdminTimesheetTable()
         {
@@ -63,7 +65,7 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpGet("Admin/{date}")]
-        [Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "admin")]
         [EncryptResponse]
         public async Task<ActionResult<IEnumerable<TimesheetAdmin_DTO>>> GetAdminTimesheetView(string date)
         {
@@ -130,7 +132,7 @@ namespace Shree_API_AWS.Controllers
 
         // POST: api/Timesheet
         [HttpPost("Employee")]
-        [Authorize(Roles = "guest,user,admin")]
+        [Authorize(Roles = "user, admin")]
         public async Task<ActionResult<IEnumerable<AlertNotification_DTO>>> CreateTimesheet(TimesheetEmployee_DTO timesheet)
         {
             var employee = await _context.Employees.Where(x => x.Employeeid == timesheet.EmployeeId).FirstOrDefaultAsync();
@@ -215,6 +217,8 @@ namespace Shree_API_AWS.Controllers
 
         // PUT: api/Timesheet/5
         [HttpPut]
+        [Authorize(Roles = "user, admin")]
+        [EncryptResponse]
         public async Task<IActionResult> UpdateTimesheet(TimesheetEmployee_DTO timesheet)
         {
             var employee = await _context.Employees.Where(x => x.Employeeid == timesheet.EmployeeId).FirstOrDefaultAsync();
@@ -248,6 +252,8 @@ namespace Shree_API_AWS.Controllers
 
         // DELETE: api/Timesheet/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "user, admin")]
+        [EncryptResponse]
         public async Task<IActionResult> DeleteTimesheet(string id)
         {
             var timesheet = await _context.TimesheetdetailsEmployees.Where(x => x.Employeeid == id).FirstOrDefaultAsync();

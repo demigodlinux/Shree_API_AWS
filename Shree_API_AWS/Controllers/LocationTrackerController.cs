@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Shree_API_AWS.Attributes;
 using Shree_API_AWS.Context;
 using Shree_API_AWS.DataTransferObjects;
 using Shree_API_AWS.Models;
@@ -13,6 +15,7 @@ namespace Shree_API_AWS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class LocationTrackerController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -25,6 +28,8 @@ namespace Shree_API_AWS.Controllers
         }
         // GET: api/<LocationTrackerController>
         [HttpGet]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<IEnumerable<LocationTracker_DTO>> GetLocationsOfAllEmployee()
         {
             return _mapper.Map<IEnumerable<LocationTracker_DTO>>(await _context.Locationtrackers.ToListAsync());
@@ -32,6 +37,8 @@ namespace Shree_API_AWS.Controllers
 
         // POST api/<LocationTrackerController>
         [HttpPost]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<IActionResult> PostLocationRealTime([FromBody] LocationTracker_DTO trackedvalue)
         {
             var existingRecord = _context.Locationtrackers

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shree_API_AWS.Attributes;
 using Shree_API_AWS.Context;
 using Shree_API_AWS.DataTransferObjects;
 using Shree_API_AWS.Models;
@@ -11,6 +13,7 @@ namespace Shree_API_AWS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class VendorController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -23,6 +26,8 @@ namespace Shree_API_AWS.Controllers
         }
         // GET: api/<VendorController>
         [HttpGet]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<IActionResult> GetVendorDetails()
         {
             var vendorDetails = await _context.Vendorlists.OrderBy(x => x.Vendorid).ToListAsync();
@@ -31,6 +36,8 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<IActionResult> PostVendorDetails(VendorList_DTO vendorData)
         {
             try

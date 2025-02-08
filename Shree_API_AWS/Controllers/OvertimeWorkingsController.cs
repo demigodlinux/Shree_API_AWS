@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shree_API_AWS.Attributes;
 using Shree_API_AWS.Context;
 using Shree_API_AWS.DataTransferObjects;
 using Shree_API_AWS.Models;
@@ -9,6 +11,7 @@ namespace Shree_API_AWS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OvertimeWorkingsController : ControllerBase
     {
         private readonly ShreeDbContext_Postgres _context;
@@ -20,6 +23,8 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpGet("OTDetails")]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<IEnumerable<OvertimeWorking_DTO>>> GetEmployeeOTDetails()
         {
             try
@@ -45,6 +50,8 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpGet("OTDetails/{empID}")]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<IEnumerable<OvertimeWorking_DTO>>> GetEmployeeOTDetails(string empID)
         {
             try
@@ -70,6 +77,8 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<string>> PostEmployeeOTDetail(OvertimeWorking_DTO overtimeWorking)
         {
             try

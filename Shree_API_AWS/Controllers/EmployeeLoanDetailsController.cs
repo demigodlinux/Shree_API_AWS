@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using Shree_API_AWS.Attributes;
 using Shree_API_AWS.Context;
 using Shree_API_AWS.DataTransferObjects;
 using Shree_API_AWS.Models;
@@ -15,6 +17,7 @@ namespace Shree_API_AWS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EmployeeLoanDetailsController : ControllerBase
     {
         private readonly ShreeDbContext_Postgres _context;
@@ -27,6 +30,8 @@ namespace Shree_API_AWS.Controllers
 
         // GET: api/Employeeloandetails
         [HttpGet("LoanDetails")]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<IEnumerable<EmployeeLoanDetail_DTO>>> GetEmployeeLoanDetails()
         {
             return Ok(_mapper.Map<IEnumerable<EmployeeLoanDetail_DTO>>(await _context.Employeeloandetails.ToListAsync()));
@@ -34,6 +39,8 @@ namespace Shree_API_AWS.Controllers
 
         // GET: api/Employeeloandetails/5
         [HttpGet("LoanDetailsLog/{id}")]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<EmployeeLoanDetails_Log_DTO>> GetEmployeeLoanDetail(int id)
         {
             return Ok(_mapper.Map<IEnumerable<EmployeeLoanDetails_Log_DTO>>(await _context.Employeeloandetailslogs.Where(x => x.Employeeloanid == id).ToListAsync()));
@@ -43,6 +50,8 @@ namespace Shree_API_AWS.Controllers
         // POST: api/Employeeloandetails
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<Employeeloandetail>> PostEmployeeLoanDetail(EmployeeLoanDetail_DTO employeeLoanDetail)
         {
             try
@@ -96,7 +105,7 @@ namespace Shree_API_AWS.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return Ok(ex.Message);
             }
             
         }

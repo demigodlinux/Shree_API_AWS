@@ -29,6 +29,8 @@ namespace Shree_API_AWS.Controllers
 
         // GET: api/<AlertsController>
         [HttpGet]
+        [Authorize(Roles = "user")]
+        [EncryptResponse]
         public async Task<IEnumerable<AlertNotification_DTO>> Get()
         {
             return _mapper.Map<IEnumerable<AlertNotification_DTO>>(await _context.AlertNotifications.ToListAsync());
@@ -36,6 +38,8 @@ namespace Shree_API_AWS.Controllers
 
         // GET api/<AlertsController>/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "user")]
+        [EncryptResponse]
         public async Task<List<Tuple<AlertNotification_DTO, TimesheetEmployee_DTO>>> Get(string id)
         {
             var alerts = await _context.AlertNotifications
@@ -68,7 +72,7 @@ namespace Shree_API_AWS.Controllers
 
 
         [HttpGet("Admin")]
-        [Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "admin")]
         [EncryptResponse]
         public async Task<ActionResult<IEnumerable<AlertNotification_DTO>>> GetAlertsForAdmin()
         {
@@ -77,7 +81,7 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpPost("Admin/Approve")]
-        [Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "admin")]
         [EncryptResponse]
         public async Task<ActionResult<string>> ApproveTimesheetAlert(AlertNotification_DTO alert)
         {
@@ -123,7 +127,7 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpPost("Admin/Sendback")]
-        [Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "admin")]
         [EncryptResponse]
         public async Task<ActionResult<string>> SendbackTimesheetAlert(AlertNotification_DTO alert)
         {

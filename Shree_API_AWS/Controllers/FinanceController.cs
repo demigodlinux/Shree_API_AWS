@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Shree_API_AWS.Attributes;
 using Shree_API_AWS.Context;
 using Shree_API_AWS.DataTransferObjects;
 using Shree_API_AWS.Models;
@@ -10,6 +12,7 @@ namespace Shree_API_AWS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class FinanceController : ControllerBase
     {
         private readonly ShreeDbContext_Postgres _context;
@@ -21,6 +24,8 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpGet("SalaryAdvDetails")]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<IEnumerable<EmployeeSalaryAdvanceDetails_DTO>>> GetEmployeeSalaryDetails()
         {
             return Ok(_mapper.Map<IEnumerable<EmployeeSalaryAdvanceDetails_DTO>>(await _context.Employeesalaryadvancedetails
@@ -28,6 +33,8 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpGet("MiscDetails")]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<IEnumerable<EmployeeMiscDetails_DTO>>> GetEmployeeMiscDetails()
         {
             return Ok(_mapper.Map<IEnumerable<EmployeeMiscDetails_DTO>>(await _context.Employeemiscdetails
@@ -35,6 +42,8 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpGet("PettyCashDetails")]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<IEnumerable<EmployeePettyCashDetails_DTO>>> GetEmployeePettyCashDetails()
         {
             return Ok(_mapper.Map<IEnumerable<EmployeePettyCashDetails_DTO>>(await _context.Employeepettycashdetails
@@ -42,24 +51,32 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpGet("HistoricSalaryAdvDetails")]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<IEnumerable<EmployeeSalaryAdvanceDetails_DTO>>> GetHistoricEmployeeSalaryDetails()
         {
             return Ok(_mapper.Map<IEnumerable<EmployeeSalaryAdvanceDetails_DTO>>(await _context.Employeesalaryadvancedetails.ToListAsync()));
         }
 
         [HttpGet("HistoricMiscDetails")]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<IEnumerable<EmployeeMiscDetails_DTO>>> GetHistoricEmployeeMiscDetails()
         {
             return Ok(_mapper.Map<IEnumerable<EmployeeMiscDetails_DTO>>(await _context.Employeemiscdetails.ToListAsync()));
         }
 
         [HttpGet("HistoricPettyCashDetails")]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<IEnumerable<EmployeePettyCashDetails_DTO>>> GetHistoricEmployeePettyCashDetails()
         {
             return Ok(_mapper.Map<IEnumerable<EmployeePettyCashDetails_DTO>>(await _context.Employeepettycashdetails.ToListAsync()));
         }
 
         [HttpPost("{service}/{paidCheck}")]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<string>> PostEmployeeFinanceDetail(jsonString json, string service, string? paidCheck = "NOTPAID")
         {
             try

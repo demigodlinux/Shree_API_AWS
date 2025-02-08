@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shree_API_AWS.Attributes;
 using Shree_API_AWS.Context;
 using Shree_API_AWS.Models;
 using Shree_API_AWS.Repository.Interface;
@@ -10,6 +12,7 @@ namespace Shree_API_AWS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ReportsController : ControllerBase
     {
         private readonly IFileUploader _fileUploader;
@@ -22,6 +25,8 @@ namespace Shree_API_AWS.Controllers
         }
 
         [HttpPost("upload")]
+        [Authorize(Roles = "user")]
+        [EncryptResponse]
         public async Task<IActionResult> UploadFile([FromForm] FetchBlobModel blob, [FromForm] IFormFile file)
         {
             var employeeData = _context.Employees.Where(x => x.Employeeid == blob.EmployeeId).FirstOrDefault();

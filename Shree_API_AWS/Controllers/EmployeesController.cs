@@ -46,13 +46,13 @@ namespace Shree_API_AWS.Controllers
                 return NotFound();
             }
 
-            return _mapper.Map<Employee_DTO>(employee);
+            return Ok(_mapper.Map<Employee_DTO>(employee));
         }
 
         // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{empId}")]
-        [Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "admin")]
         [EncryptResponse]
         public async Task<IActionResult> PutEmployee(string empId, [FromBody] Employee_DTO employee)
         {
@@ -100,7 +100,7 @@ namespace Shree_API_AWS.Controllers
         // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "admin")]
         [EncryptResponse]
         public async Task<ActionResult<Employee_DTO>> PostEmployee(Employee_DTO employee)
         {
@@ -110,7 +110,7 @@ namespace Shree_API_AWS.Controllers
 
             if (existingRecord != null)
             {
-                return Conflict("Data already exists for the specified Employeeid and EntryForMonth.");
+                return Ok("Data already exists for the specified Employeeid and EntryForMonth.");
             }
 
             var employeeDetail = new Employee()
@@ -141,7 +141,7 @@ namespace Shree_API_AWS.Controllers
 
         // DELETE: api/Employees/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "admin")]
         [EncryptResponse]
         public async Task<IActionResult> DeleteEmployee(string id)
         {

@@ -17,6 +17,7 @@ namespace Shree_API_AWS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class LogEmployeeAttendancesController : ControllerBase
     {
         private readonly ShreeDbContext_Postgres _context;
@@ -29,6 +30,8 @@ namespace Shree_API_AWS.Controllers
 
         // GET: api/LogEmployeeattendances
         [HttpGet]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<IEnumerable<LogEmployeeattendance>>> GetLogEmployeeAttendances()
         {
             return Ok(await _context.LogEmployeeattendances.ToListAsync());
@@ -36,6 +39,8 @@ namespace Shree_API_AWS.Controllers
 
         // GET: api/LogEmployeeattendances/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<IEnumerable<LogEmployeeAttendance_DTO>>> GetLogEmployeeAttendance(string id)
         {
             var logEmployeeAttendance = await _context.LogEmployeeattendances.Where(x => x.Employeeid == id && x.Checkintiming != null).ToListAsync();
@@ -48,38 +53,9 @@ namespace Shree_API_AWS.Controllers
             return Ok(_mapper.Map<IEnumerable<LogEmployeeAttendance_DTO>>(logEmployeeAttendance));
         }
 
-        // PUT: api/LogEmployeeattendances/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutLogEmployeeAttendance(int id, LogEmployeeattendance logEmployeeAttendance)
-        {
-            if (id != logEmployeeAttendance.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(logEmployeeAttendance).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LogEmployeeAttendanceExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         [HttpPost]
+        [Authorize(Roles = "user")]
+        [EncryptResponse]
         public async Task<ActionResult<string>> PostLogEmployeeAttendance(UserCheckin userData)
         {
             try
@@ -207,6 +183,8 @@ namespace Shree_API_AWS.Controllers
 
         // DELETE: api/LogEmployeeattendances/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<IActionResult> DeleteLogEmployeeAttendance(int id)
         {
             var logEmployeeAttendance = await _context.LogEmployeeattendances.FindAsync(id);

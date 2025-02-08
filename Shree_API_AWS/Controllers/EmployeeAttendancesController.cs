@@ -28,7 +28,7 @@ namespace Shree_API_AWS.Controllers
 
         // GET: api/EmployeeAttendances
         [HttpGet]
-        [Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "admin")]
         [EncryptResponse]
         public async Task<ActionResult<IEnumerable<Employeeattendance>>> GetEmployeeAttendances()
         {
@@ -37,7 +37,7 @@ namespace Shree_API_AWS.Controllers
 
         // GET: api/EmployeeAttendances/5
         [HttpGet("{empId}")]
-        [Authorize(Roles = "user,admin")]
+        [Authorize(Roles = "admin")]
         [EncryptResponse]
         public async Task<ActionResult<Employeeattendance>> GetEmployeeAttendance(string empId)
         {
@@ -56,6 +56,8 @@ namespace Shree_API_AWS.Controllers
         // POST: api/EmployeeAttendances
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "admin")]
+        [EncryptResponse]
         public async Task<ActionResult<string>> PostEmployeeAttendance(AttendanceDetails employeeAttendance)
         {
             try
@@ -181,11 +183,11 @@ namespace Shree_API_AWS.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-                return "Success";
+                return Ok("Success");
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return Ok(ex.Message);
             }
         }
 
