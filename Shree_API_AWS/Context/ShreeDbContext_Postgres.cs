@@ -36,6 +36,8 @@ public partial class ShreeDbContext_Postgres : DbContext
 
     public virtual DbSet<Employeesalaryadvancedetail> Employeesalaryadvancedetails { get; set; }
 
+    public virtual DbSet<Indianholidays2025> Indianholidays2025s { get; set; }
+
     public virtual DbSet<Inventorylist> Inventorylists { get; set; }
 
     public virtual DbSet<Locationtracker> Locationtrackers { get; set; }
@@ -246,15 +248,25 @@ public partial class ShreeDbContext_Postgres : DbContext
             entity.Property(e => e.Islate).HasColumnName("islate");
             entity.Property(e => e.Ispaidleave).HasColumnName("ispaidleave");
             entity.Property(e => e.Ispresent).HasColumnName("ispresent");
+            entity.Property(e => e.Ispublicholidayduty).HasColumnName("ispublicholidayduty");
+            entity.Property(e => e.Issundyduty).HasColumnName("issundyduty");
             entity.Property(e => e.Lastabsentdate).HasColumnName("lastabsentdate");
             entity.Property(e => e.Lasthalfdaydate).HasColumnName("lasthalfdaydate");
             entity.Property(e => e.Lastlateday).HasColumnName("lastlateday");
             entity.Property(e => e.Lastpaidleavedate).HasColumnName("lastpaidleavedate");
             entity.Property(e => e.Lastpresentdate).HasColumnName("lastpresentdate");
+            entity.Property(e => e.Lastpublicholidaydutydate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("lastpublicholidaydutydate");
+            entity.Property(e => e.Lastsundaydutydate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("lastsundaydutydate");
             entity.Property(e => e.Totaldaysabsent).HasColumnName("totaldaysabsent");
             entity.Property(e => e.Totaldayshalfdays).HasColumnName("totaldayshalfdays");
             entity.Property(e => e.Totaldayslateday).HasColumnName("totaldayslateday");
             entity.Property(e => e.Totaldayspresent).HasColumnName("totaldayspresent");
+            entity.Property(e => e.Totalpublicholidaydutydays).HasColumnName("totalpublicholidaydutydays");
+            entity.Property(e => e.Totalsundaydutydays).HasColumnName("totalsundaydutydays");
 
             entity.HasOne(d => d.Employee).WithMany(p => p.Employeeattendances)
                 .HasPrincipalKey(p => p.Employeeid)
@@ -450,6 +462,27 @@ public partial class ShreeDbContext_Postgres : DbContext
                 .HasConstraintName("fk_employee");
         });
 
+        modelBuilder.Entity<Indianholidays2025>(entity =>
+        {
+            entity.HasKey(e => e.Holidayid).HasName("indianholidays_2025_pkey");
+
+            entity.ToTable("indianholidays_2025");
+
+            entity.Property(e => e.Holidayid).HasColumnName("holidayid");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Holidaydate).HasColumnName("holidaydate");
+            entity.Property(e => e.Holidayname)
+                .HasMaxLength(100)
+                .HasColumnName("holidayname");
+            entity.Property(e => e.Holidaytype)
+                .HasMaxLength(50)
+                .HasColumnName("holidaytype");
+            entity.Property(e => e.Isactive).HasColumnName("isactive");
+            entity.Property(e => e.Region)
+                .HasMaxLength(100)
+                .HasColumnName("region");
+        });
+
         modelBuilder.Entity<Inventorylist>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("inventorylist_pkey");
@@ -522,15 +555,19 @@ public partial class ShreeDbContext_Postgres : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Attendancedate).HasColumnName("attendancedate");
             entity.Property(e => e.Checkintiming)
+                .HasMaxLength(100)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnName("checkintiming");
             entity.Property(e => e.Checkouttiming)
+                .HasMaxLength(100)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnName("checkouttiming");
             entity.Property(e => e.Dataenteredby)
                 .HasMaxLength(100)
                 .HasColumnName("dataenteredby");
-            entity.Property(e => e.Dataenteredon).HasColumnName("dataenteredon");
+            entity.Property(e => e.Dataenteredon)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnName("dataenteredon");
             entity.Property(e => e.Employeeattendid).HasColumnName("employeeattendid");
             entity.Property(e => e.Employeeid)
                 .HasMaxLength(50)
@@ -628,30 +665,26 @@ public partial class ShreeDbContext_Postgres : DbContext
                 .HasMaxLength(100)
                 .HasColumnName("dataenteredby");
             entity.Property(e => e.Dataenteredon)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("dataenteredon");
+            entity.Property(e => e.Dateofotworking).HasColumnName("dateofotworking");
             entity.Property(e => e.Employeeid)
-                .HasMaxLength(50)
+                .HasMaxLength(12)
                 .HasColumnName("employeeid");
-            entity.Property(e => e.Entryformonth)
-                .HasMaxLength(50)
-                .HasColumnName("entryformonth");
-            entity.Property(e => e.Ispublicholidayduty).HasColumnName("ispublicholidayduty");
-            entity.Property(e => e.Issundayduty).HasColumnName("issundayduty");
-            entity.Property(e => e.Lastpublicholidayduty)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("lastpublicholidayduty");
-            entity.Property(e => e.Lastsundayduty)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("lastsundayduty");
-            entity.Property(e => e.Totalpublicholidayduty).HasColumnName("totalpublicholidayduty");
-            entity.Property(e => e.Totalsundayduty).HasColumnName("totalsundayduty");
+            entity.Property(e => e.Entryfor)
+                .HasMaxLength(100)
+                .HasColumnName("entryfor");
+            entity.Property(e => e.Isactive)
+                .HasDefaultValue(true)
+                .HasColumnName("isactive");
+            entity.Property(e => e.Othoursworked).HasColumnName("othoursworked");
 
             entity.HasOne(d => d.Employee).WithMany(p => p.Overtimeworkings)
                 .HasPrincipalKey(p => p.Employeeid)
                 .HasForeignKey(d => d.Employeeid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_overtime_working_employee");
+                .HasConstraintName("fk_employee");
         });
 
         modelBuilder.Entity<TimesheetdetailsAdmin>(entity =>

@@ -9,23 +9,17 @@ public partial class Overtimeworking
 
     public string Employeeid { get; set; } = null!;
 
-    public string? Entryformonth { get; set; }
+    public string Dataenteredby { get; set; } = null!;
 
-    public DateTime? Dataenteredon { get; set; }
+    public DateTime Dataenteredon { get; set; }
 
-    public string? Dataenteredby { get; set; }
+    public string Entryfor { get; set; } = null!;
 
-    public bool? Issundayduty { get; set; }
+    public DateOnly Dateofotworking { get; set; }
 
-    public DateTime? Lastsundayduty { get; set; }
+    public float Othoursworked { get; set; }
 
-    public int? Totalsundayduty { get; set; }
-
-    public bool? Ispublicholidayduty { get; set; }
-
-    public DateTime? Lastpublicholidayduty { get; set; }
-
-    public int? Totalpublicholidayduty { get; set; }
+    public bool Isactive { get; set; }
 
     public virtual Employee Employee { get; set; } = null!;
 }

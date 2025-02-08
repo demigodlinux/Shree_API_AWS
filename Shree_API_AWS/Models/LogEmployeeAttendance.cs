@@ -31,9 +31,9 @@ public partial class LogEmployeeattendance
 
     public bool? Isonduty { get; set; }
 
-    public DateTime? Checkintiming { get; set; }
+    public string? Checkintiming { get; set; }
 
-    public DateTime? Checkouttiming { get; set; }
+    public string? Checkouttiming { get; set; }
 
     public virtual Employee Employee { get; set; } = null!;
 

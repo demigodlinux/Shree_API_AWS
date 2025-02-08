@@ -24,24 +24,21 @@ namespace Shree_API_AWS.Controllers
         public async Task<ActionResult<IEnumerable<EmployeeSalaryAdvanceDetails_DTO>>> GetEmployeeSalaryDetails()
         {
             return Ok(_mapper.Map<IEnumerable<EmployeeSalaryAdvanceDetails_DTO>>(await _context.Employeesalaryadvancedetails
-                .Where(x => x.Isadvancededucted == false && x.Isactive == true && x.Amountprocessedon >= DateOnly.FromDateTime(DateTime.Now).AddDays(-30)
-                    && x.Amountprocessedon <= DateOnly.FromDateTime(DateTime.Now).AddDays(1)).ToListAsync()));
+                .Where(x => x.Isadvancededucted == false && x.Isactive == true && x.Amountprocessedon.Value.Month == DateOnly.FromDateTime(DateTime.Now).Month).ToListAsync()));
         }
 
         [HttpGet("MiscDetails")]
         public async Task<ActionResult<IEnumerable<EmployeeMiscDetails_DTO>>> GetEmployeeMiscDetails()
         {
             return Ok(_mapper.Map<IEnumerable<EmployeeMiscDetails_DTO>>(await _context.Employeemiscdetails
-                .Where(x => x.Iscashdeducted == false && x.Isactive == true && x.Amountprocessedon >= DateOnly.FromDateTime(DateTime.Now).AddDays(-30)
-                    && x.Amountprocessedon <= DateOnly.FromDateTime(DateTime.Now).AddDays(1)).ToListAsync()));
+                .Where(x => x.Iscashdeducted == false && x.Isactive == true && x.Amountprocessedon.Value.Month == DateOnly.FromDateTime(DateTime.Now).Month).ToListAsync()));
         }
 
         [HttpGet("PettyCashDetails")]
         public async Task<ActionResult<IEnumerable<EmployeePettyCashDetails_DTO>>> GetEmployeePettyCashDetails()
         {
             return Ok(_mapper.Map<IEnumerable<EmployeePettyCashDetails_DTO>>(await _context.Employeepettycashdetails
-                .Where(x => x.Iscashdeducted == false && x.Isactive == true && x.Amountprocessedon >= DateOnly.FromDateTime(DateTime.Now).AddDays(-30)
-                    && x.Amountprocessedon <= DateOnly.FromDateTime(DateTime.Now).AddDays(1)).ToListAsync()));
+                .Where(x => x.Iscashdeducted == false && x.Isactive == true && x.Amountprocessedon.Value.Month == DateOnly.FromDateTime(DateTime.Now).Month).ToListAsync()));
         }
 
         [HttpGet("HistoricSalaryAdvDetails")]

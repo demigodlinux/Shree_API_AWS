@@ -36,17 +36,16 @@ namespace Shree_API_AWS.Controllers
 
         // GET: api/LogEmployeeattendances/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<LogEmployeeAttendance_DTO>> GetLogEmployeeAttendance(string id)
+        public async Task<ActionResult<IEnumerable<LogEmployeeAttendance_DTO>>> GetLogEmployeeAttendance(string id)
         {
-            var logEmployeeAttendance = await _context.LogEmployeeattendances.Where(x => x.Employeeid == id && x.Checkintiming != null
-            && DateOnly.FromDateTime(x.Dataenteredon) == DateOnly.FromDateTime(DateTime.UtcNow)).FirstOrDefaultAsync();
+            var logEmployeeAttendance = await _context.LogEmployeeattendances.Where(x => x.Employeeid == id && x.Checkintiming != null).ToListAsync();
 
             if (logEmployeeAttendance == null)
             {
                 return Ok(null);
             }
 
-            return Ok(_mapper.Map<LogEmployeeAttendance_DTO>(logEmployeeAttendance));
+            return Ok(_mapper.Map<IEnumerable<LogEmployeeAttendance_DTO>>(logEmployeeAttendance));
         }
 
         // PUT: api/LogEmployeeattendances/5
@@ -85,7 +84,7 @@ namespace Shree_API_AWS.Controllers
         {
             try
             {
-                string currentMonth = DateTime.UtcNow.ToString("yyyy-MM");
+                string currentMonth = DateTime.UtcNow.ToString("MMMM yyyy");
 
                 // Convert user timestamp to Unspecified kind for database compatibility
                 var userDateOnly = DateOnly.FromDateTime(DateTime.SpecifyKind(userData.Timestamp, DateTimeKind.Unspecified));
@@ -133,10 +132,10 @@ namespace Shree_API_AWS.Controllers
             if (logData != null)
             {
                 // Ensure DateTimeKind is Unspecified
-                logData.Checkouttiming = DateTime.SpecifyKind(userData.Timestamp, DateTimeKind.Unspecified);
+                //logData.Checkouttiming = DateTime.SpecifyKind(userData.Timestamp, DateTimeKind.Unspecified);
 
-                _context.Entry(logData).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                //_context.Entry(logData).State = EntityState.Modified;
+                //await _context.SaveChangesAsync();
             }
             return Ok("Checkout updated");
         }
@@ -185,23 +184,23 @@ namespace Shree_API_AWS.Controllers
 
         private async Task LogAttendance(UserCheckin userData, Employee employeeData, Employeeattendance employeeAttendance, bool isLateCheck)
         {
-            var timestampUnspecified = DateTime.SpecifyKind(userData.Timestamp, DateTimeKind.Unspecified);
+            //var timestampUnspecified = DateTime.SpecifyKind(userData.Timestamp, DateTimeKind.Unspecified);
 
-            var loggedAttendance = new LogEmployeeattendance
-            {
-                Employeeid = userData.EmployeeId,
-                Entryformonth = DateTime.UtcNow.ToString("yyyy-MM"),
-                Employeeattendid = employeeAttendance.Id,
-                Attendancedate = userData.Timestamp.ToUniversalTime(), // Ensure Unspecified kind
-                Checkintiming = userData.IsCheckedIn ? userData.Timestamp.ToUniversalTime() : null,
-                Checkouttiming = userData.IsCheckedOut ? userData.Timestamp.ToUniversalTime() : null,
-                Dataenteredby = $"{employeeData.Firstname} {employeeData.Lastname}",
-                Dataenteredon = DateTime.UtcNow, // Ensure Unspecified kind
-                Islate = isLateCheck,
-                Ispresent = true
-            };
-            _context.LogEmployeeattendances.Add(loggedAttendance);
-            await _context.SaveChangesAsync();
+            //var loggedAttendance = new LogEmployeeattendance
+            //{
+            //    Employeeid = userData.EmployeeId,
+            //    Entryformonth = DateTime.UtcNow.ToString("yyyy-MM"),
+            //    Employeeattendid = employeeAttendance.Id,
+            //    Attendancedate = userData.Timestamp.ToUniversalTime(), // Ensure Unspecified kind
+            //    Checkintiming = userData.IsCheckedIn ? userData.Timestamp.ToUniversalTime() : null,
+            //    Checkouttiming = userData.IsCheckedOut ? userData.Timestamp.ToUniversalTime() : null,
+            //    Dataenteredby = $"{employeeData.Firstname} {employeeData.Lastname}",
+            //    Dataenteredon = DateTime.UtcNow, // Ensure Unspecified kind
+            //    Islate = isLateCheck,
+            //    Ispresent = true
+            //};
+            //_context.LogEmployeeattendances.Add(loggedAttendance);
+            //await _context.SaveChangesAsync();
         }
 
 

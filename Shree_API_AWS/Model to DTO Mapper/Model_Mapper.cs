@@ -25,6 +25,7 @@ namespace LearningAPI.Mapper
             CreateMap<Employeemiscdetail, EmployeeMiscDetails_DTO>().ReverseMap();
             CreateMap<Employeepettycashdetail, EmployeePettyCashDetails_DTO>().ReverseMap();
             CreateMap<Employeesalaryadvancedetail, EmployeeSalaryAdvanceDetails_DTO>().ReverseMap();
+            CreateMap<Indianholidays2025, IndianPublicHolidays_DTO>().ReverseMap();
         }
     }
 }

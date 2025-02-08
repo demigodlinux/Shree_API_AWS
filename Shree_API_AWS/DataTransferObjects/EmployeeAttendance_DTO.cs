@@ -39,5 +39,17 @@
         public DateTime? LastHalfDayDate { get; set; }
 
         public int? TotalDaysHalfDays { get; set; }
+
+        public bool? IsSundyDuty { get; set; }
+
+        public DateTime? LastSundayDutyDate { get; set; }
+
+        public int? TotalSundayDutyDays { get; set; }
+
+        public bool? IsPublicHolidayDuty { get; set; }
+
+        public DateTime? LastPublicHolidayDutyDate { get; set; }
+
+        public int? TotalPublicHolidayDutyDays { get; set; }
     }
 }

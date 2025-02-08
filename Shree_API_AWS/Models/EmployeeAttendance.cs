@@ -43,6 +43,18 @@ public partial class Employeeattendance
 
     public int? Totaldayshalfdays { get; set; }
 
+    public bool? Issundyduty { get; set; }
+
+    public DateTime? Lastsundaydutydate { get; set; }
+
+    public int? Totalsundaydutydays { get; set; }
+
+    public bool? Ispublicholidayduty { get; set; }
+
+    public DateTime? Lastpublicholidaydutydate { get; set; }
+
+    public int? Totalpublicholidaydutydays { get; set; }
+
     public virtual Employee Employee { get; set; } = null!;
 
     public virtual ICollection<LogEmployeeattendance> LogEmployeeattendances { get; set; } = new List<LogEmployeeattendance>();

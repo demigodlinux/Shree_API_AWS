@@ -6,22 +6,16 @@
 
         public string EmployeeId { get; set; } = null!;
 
-        public string? EntryForMonth { get; set; }
+        public string DataEnteredBy { get; set; } = null!;
 
-        public DateTime? DataEnteredOn { get; set; }
+        public DateTime DataEnteredOn { get; set; }
 
-        public string? DataEnteredBy { get; set; }
+        public string EntryFor { get; set; } = null!;
 
-        public bool? IsSundayDuty { get; set; }
+        public DateOnly DateOfOTWorking { get; set; }
 
-        public DateTime? LastSundayDuty { get; set; }
+        public float OTHoursWorked { get; set; }
 
-        public int? TotalSundayDuty { get; set; }
-
-        public bool? IsPublicHolidayDuty { get; set; }
-
-        public DateTime? LastPublicHolidayDuty { get; set; }
-
-        public int? TotalPublicHolidayDuty { get; set; }
+        public bool IsActive { get; set; }
     }
 }
