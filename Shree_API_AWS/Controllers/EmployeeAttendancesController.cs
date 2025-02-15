@@ -164,7 +164,9 @@ namespace Shree_API_AWS.Controllers
                         Employeeattendid = mappedAttendanceDetails.Id,
                         Employeeid = mappedAttendanceDetails.Employeeid,
                         Entryformonth = mappedAttendanceDetails.Entryformonth,
-                        Attendancedate = DateTime.SpecifyKind(employeeAttendance.CheckinTiming.Value, DateTimeKind.Utc),
+                        Attendancedate = employeeAttendance.CheckinTiming != null ? DateTime.SpecifyKind(employeeAttendance.CheckinTiming.Value, DateTimeKind.Utc) 
+                                            : employeeAttendance.EmployeeAttendanceDetails.IsAbsent == true ? DateTime.SpecifyKind(employeeAttendance.EmployeeAttendanceDetails.LastAbsentDate.Value, DateTimeKind.Utc) 
+                                            : employeeAttendance.EmployeeAttendanceDetails.IsPaidLeave == true ? DateTime.SpecifyKind(employeeAttendance.EmployeeAttendanceDetails.LastPaidLeaveDate.Value, DateTimeKind.Utc) : null,
                         Checkintiming = checkInTime,
                         Checkouttiming = checkOutTime,
                         Dataenteredby = mappedAttendanceDetails.Dataenteredby,

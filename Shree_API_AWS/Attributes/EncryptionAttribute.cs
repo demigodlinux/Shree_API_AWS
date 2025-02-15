@@ -18,14 +18,21 @@ namespace Shree_API_AWS.Attributes
             {
                 var plainText = okResult.Value;
 
-                if (plainText != null)
+                if (plainText != null) 
                 {
-                    // Stringify the object or array into JSON
-                    var jsonString = JsonConvert.SerializeObject(plainText);
+                    if (plainText is not string)
+                    {
+                        // Serialize the object or array into JSON
+                        var jsonString = JsonConvert.SerializeObject(plainText);
 
-                    // Encrypt the response
-                    var encryptedData = EncryptString(jsonString);
-                    context.Result = new OkObjectResult(new { EncryptedData = encryptedData });
+                        // Encrypt the response
+                        var encryptedData = EncryptString(jsonString);
+                        context.Result = new OkObjectResult(new { EncryptedData = encryptedData });
+                    }
+                    else
+                    {
+                        context.Result = new OkObjectResult(plainText);
+                    }
                 }
             }
         }

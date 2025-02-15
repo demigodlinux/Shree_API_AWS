@@ -43,7 +43,7 @@ namespace Shree_API_AWS.Controllers
         [EncryptResponse]
         public async Task<ActionResult<IEnumerable<LogEmployeeAttendance_DTO>>> GetLogEmployeeAttendance(string id)
         {
-            var logEmployeeAttendance = await _context.LogEmployeeattendances.Where(x => x.Employeeid == id && x.Checkintiming != null).ToListAsync();
+            var logEmployeeAttendance = await _context.LogEmployeeattendances.Where(x => x.Employeeid == id).ToListAsync();
 
             if (logEmployeeAttendance == null)
             {

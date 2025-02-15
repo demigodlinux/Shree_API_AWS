@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Shree_API_AWS.Attributes;
 using Shree_API_AWS.Context;
 using Shree_API_AWS.Repository;
 using Shree_API_AWS.Repository.Interface;
@@ -47,6 +48,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<IToken, TokenService>();
 builder.Services.AddScoped<IUser, UserService>();
 builder.Services.AddScoped<IFileUploader, FileUploaderService>();
+builder.Services.AddScoped<EncryptResponseAttribute>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

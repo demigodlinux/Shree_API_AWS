@@ -101,7 +101,7 @@ namespace Shree_API_AWS.Controllers
             }
             catch (Exception ex)
             {
-                return Ok("Error :- " + ex.Message);
+                return Ok(ex.Message);
             }
             
         }

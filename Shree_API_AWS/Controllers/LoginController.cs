@@ -21,10 +21,14 @@ namespace Shree_API_AWS.Controllers
         {
             Userdetailstable auth = await user.AuthenticateUser(
                 login.UserName, login.Password);
-            if (auth != null)
+            if (auth != null && auth.Role == "admin")
             {
                 var tokens = await token.CreateToken(auth);
                 return Ok(new {EmployeeId = auth.Employeeid, token = tokens.ToString()});
+            }
+            else if(auth != null && auth.Role != "admin")
+            {
+                return BadRequest("Not Authorized!!");
             }
             return BadRequest("Username or Pass Incorrect!");
 

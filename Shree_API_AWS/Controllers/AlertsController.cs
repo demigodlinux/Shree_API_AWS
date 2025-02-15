@@ -85,44 +85,52 @@ namespace Shree_API_AWS.Controllers
         [EncryptResponse]
         public async Task<ActionResult<string>> ApproveTimesheetAlert(AlertNotification_DTO alert)
         {
-            var timesheetData = getTimesheetData(alert.TimesheetId);
-            var exactTimesheetData = JsonConvert.DeserializeObject<Timesheet>(timesheetData.Result.TimesheetDetails);
-
-            DateTime parsedDateTime;
-            DateTime.TryParseExact(exactTimesheetData?.TimeEntry, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDateTime);
-
-            List<AlertNotification> existingDatas = await _context.AlertNotifications
-            .Where(x => x.TimesheetId == alert.TimesheetId)
-            .ToListAsync();
-            if (existingDatas.Count > 0)
+            try
             {
-                existingDatas.ForEach(existingData => {
-                    existingData.Isnotificationactive = false;
-                    _context.Entry(existingData).State = EntityState.Modified;
-                });
+                var timesheetData = getTimesheetData(alert.TimesheetId);
+                var exactTimesheetData = JsonConvert.DeserializeObject<Timesheet>(timesheetData.Result.TimesheetDetails);
+
+                DateTime parsedDateTime;
+                DateTime.TryParseExact(exactTimesheetData?.TimeEntry, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDateTime);
+
+                List<AlertNotification> existingDatas = await _context.AlertNotifications
+                .Where(x => x.TimesheetId == alert.TimesheetId)
+                .ToListAsync();
+                if (existingDatas.Count > 0)
+                {
+                    existingDatas.ForEach(existingData => {
+                        existingData.Isnotificationactive = false;
+                        _context.Entry(existingData).State = EntityState.Modified;
+                    });
+
+                    await _context.SaveChangesAsync();
+                }
+
+
+                var alertData = new AlertNotification()
+                {
+                    Dataenteredby = "Admin",
+                    Dataenteredon = DateTime.Now,
+                    Employeeid = alert.EmployeeId,
+                    Notificationmessage = $"Timesheet for #{parsedDateTime.ToString("dd-MM-yyyy")}# for the site #{exactTimesheetData.SiteName}# at #{exactTimesheetData.SiteLocation}# has been Approved by Admin.",
+                    Isadminnotification = false,
+                    Isemployeenotification = true,
+                    Isapproved = true,
+                    Issentback = false,
+                    Isnotificationactive = true,
+                    TimesheetId = alert.TimesheetId,
+                };
+                _context.AlertNotifications.Add(alertData);
 
                 await _context.SaveChangesAsync();
+
+                return Ok("Success");
             }
-
-
-            var alertData = new AlertNotification()
+            catch(Exception ex)
             {
-                Dataenteredby = "Admin",
-                Dataenteredon = DateTime.Now,
-                Employeeid = alert.EmployeeId,
-                Notificationmessage = $"Timesheet for #{parsedDateTime.ToString("dd-MM-yyyy")}# for the site #{exactTimesheetData.SiteName}# at #{exactTimesheetData.SiteLocation}# has been Approved by Admin.",
-                Isadminnotification = false,
-                Isemployeenotification = true,
-                Isapproved = true,
-                Issentback = false,
-                Isnotificationactive = true,
-                TimesheetId = alert.TimesheetId,
-            };
-            _context.AlertNotifications.Add(alertData);
-
-            await _context.SaveChangesAsync();
-
-            return Ok("Success");
+                return Ok(ex);
+            }
+            
 
         }
 
@@ -131,43 +139,49 @@ namespace Shree_API_AWS.Controllers
         [EncryptResponse]
         public async Task<ActionResult<string>> SendbackTimesheetAlert(AlertNotification_DTO alert)
         {
-            var timesheetData = getTimesheetData(alert.TimesheetId);
-            var exactTimesheetData = JsonConvert.DeserializeObject<Timesheet>(timesheetData.Result.TimesheetDetails);
-
-            DateTime parsedDateTime;
-            DateTime.TryParseExact(exactTimesheetData?.TimeEntry, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDateTime);
-
-            List<AlertNotification> existingDatas = await _context.AlertNotifications
-            .Where(x => x.TimesheetId == alert.TimesheetId)
-            .ToListAsync();
-            if (existingDatas.Count > 0)
+            try
             {
-                existingDatas.ForEach(existingData => {
-                    existingData.Isnotificationactive = false;
-                    _context.Entry(existingData).State = EntityState.Modified;
-                });
+                var timesheetData = getTimesheetData(alert.TimesheetId);
+                var exactTimesheetData = JsonConvert.DeserializeObject<Timesheet>(timesheetData.Result.TimesheetDetails);
 
+                DateTime parsedDateTime;
+                DateTime.TryParseExact(exactTimesheetData?.TimeEntry, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDateTime);
+
+                List<AlertNotification> existingDatas = await _context.AlertNotifications
+                .Where(x => x.TimesheetId == alert.TimesheetId)
+                .ToListAsync();
+                if (existingDatas.Count > 0)
+                {
+                    existingDatas.ForEach(existingData => {
+                        existingData.Isnotificationactive = false;
+                        _context.Entry(existingData).State = EntityState.Modified;
+                    });
+
+                    await _context.SaveChangesAsync();
+                }
+
+                var alertData = new AlertNotification()
+                {
+                    Dataenteredby = "Admin",
+                    Dataenteredon = DateTime.Now,
+                    Employeeid = alert.EmployeeId,
+                    Notificationmessage = $"Timesheet for #{parsedDateTime.ToString("dd-MM-yyyy")}# for the site #{exactTimesheetData.SiteName}# at #{exactTimesheetData.SiteLocation}# has been sent back by Admin for corrections. Please make the necessary changes and sendback the timesheet.",
+                    Isadminnotification = false,
+                    Isemployeenotification = true,
+                    Isapproved = false,
+                    Issentback = true,
+                    Isnotificationactive = true,
+                    TimesheetId = alert.TimesheetId,
+                };
+                _context.AlertNotifications.Add(alertData);
                 await _context.SaveChangesAsync();
+
+                return Ok("Success");
             }
-
-            var alertData = new AlertNotification()
+            catch(Exception ex)
             {
-                Dataenteredby = "Admin",
-                Dataenteredon = DateTime.Now,
-                Employeeid = alert.EmployeeId,
-                Notificationmessage = $"Timesheet for #{parsedDateTime.ToString("dd-MM-yyyy")}# for the site #{exactTimesheetData.SiteName}# at #{exactTimesheetData.SiteLocation}# has been sent back by Admin for corrections. Please make the necessary changes and sendback the timesheet.",
-                Isadminnotification = false,
-                Isemployeenotification = true,
-                Isapproved = false,
-                Issentback = true,
-                Isnotificationactive = true,
-                TimesheetId = alert.TimesheetId,
-            };
-            _context.AlertNotifications.Add(alertData);
-            await _context.SaveChangesAsync();
-
-            return Ok("Success");
-
+                return Ok(ex.Message);
+            }
         }
 
         private async Task<TimesheetEmployee_DTO> getTimesheetData(int? timesheetID)
